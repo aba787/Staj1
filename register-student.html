@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تسجيل طالب</title>
+  <style>
+    body {
+      background-color: #e6f0ff;
+      font-family: 'Tajawal', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .form-container {
+      background: white;
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #013a75;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #007bff;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .phone-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .phone-group select {
+      width: 35%;
+    }
+
+    .phone-group input {
+      width: 65%;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #013a75;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0055aa;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>تسجيل كطالب</h2>
+    <form>
+      <input type="text" placeholder="الاسم الكامل" required>
+      <input type="email" placeholder="البريد الإلكتروني" required>
+      <input type="password" placeholder="كلمة المرور" required>
+      <input type="text" placeholder="اسم المدرسة" required>
+      
+      <div class="phone-group">
+        <select required>
+          <option value="+966">🇸🇦 +966</option>
+          <option value="+971">🇦🇪 +971</option>
+          <option value="+965">🇰🇼 +965</option>
+          <option value="+973">🇧🇭 +973</option>
+          <option value="+968">🇴🇲 +968</option>
+          <option value="+20">🇪🇬 +20</option>
+        </select>
+        <input type="tel" placeholder="رقم الهاتف" required>
+      </div>
+
+      <select required>
+        <option value="">اختر المرحلة التعليمية</option>
+        <option value="ابتدائي">المرحلة الابتدائية</option>
+        <option value="متوسط">المرحلة المتوسطة</option>
+        <option value="ثانوي">المرحلة الثانوية</option>
+        <option value="جامعي">المرحلة الجامعية</option>
+      </select>
+
+      <button type="submit">تسجيل</button>
+    </form>
+  </div>
+</body>
+</html>

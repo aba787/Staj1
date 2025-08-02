@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>طلب تقديم كمعلم</title>
+  <style>
+    body {
+      background-color: #e6f0ff;
+      font-family: 'Tajawal', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .form-container {
+      background: white;
+      padding: 30px;
+      width: 100%;
+      max-width: 450px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #013a75;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #007bff;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .phone-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .phone-group select {
+      width: 35%;
+    }
+
+    .phone-group input {
+      width: 65%;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #013a75;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0055aa;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>التقديم كمعلم</h2>
+    <form action="/apply-teacher" method="POST">
+      <input type="text" name="name" placeholder="الاسم الكامل" required>
+      <input type="text" name="subject" placeholder="التخصص" required>
+
+      <div class="phone-group">
+        <select name="prefix" required>
+          <option value="+966">+966 🇸🇦</option>
+          <option value="+971">+971 🇦🇪</option>
+          <option value="+965">+965 🇰🇼</option>
+          <option value="+20">+20 🇪🇬</option>
+        </select>
+        <input type="tel" name="phone" placeholder="رقم الجوال" required>
+      </div>
+
+      <input type="email" name="email" placeholder="البريد الإلكتروني" required>
+
+      <textarea name="notes" rows="4" placeholder="نبذة / ملاحظات إضافية" required></textarea>
+
+      <button type="submit">إرسال الطلب</button>
+    </form>
+  </div>
+</body>
+</html>
