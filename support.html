@@ -1,0 +1,87 @@
+<!-- File: public/support.html -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>خدمة العملاء</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f6fc;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+    .support-box {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      width: 360px;
+    }
+    h2 {
+      text-align: center;
+      color: #0d47a1;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1565c0;
+    }
+    .back {
+      margin-top: 15px;
+      background: transparent;
+      color: #1976d2;
+      border: none;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="support-box">
+    <h2> خدمة العملاء </h2>
+    <form action="/support" method="POST">
+      <label>اسمك:</label>
+      <input type="text" name="name" required>
+
+      <label>البريد الإلكتروني:</label>
+      <input type="email" name="email" required>
+
+      <label>الرسالة:</label>
+      <textarea name="message" rows="5" required></textarea>
+
+      <button type="submit">إرسال</button>
+    </form>
+    <form action="/">
+      <button class="back" type="submit">الرجوع للصفحة الرئيسية</button>
+    </form>
+  </div>
+</body>
+</html>

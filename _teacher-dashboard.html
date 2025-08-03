@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>لوحة تحكم المعلم</title>
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f4f8;
+    }
+
+    header {
+      background-color: #013a75;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 22px;
+    }
+
+    .container {
+      padding: 25px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .profile {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .profile img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-info h3 {
+      margin: 0;
+      font-size: 20px;
+      color: #013a75;
+    }
+
+    .form-section {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+    }
+
+    .form-section h4 {
+      margin-bottom: 15px;
+      color: #013a75;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #013a75;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .offers-list {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .offer {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+
+    .offer:last-child {
+      border-bottom: none;
+    }
+  </style>
+  </head>
+  <body>
+    <header>🎓 لوحة المعلم</header>
+    <div class="container">
+
+      <!-- البروفايل -->
+      <div class="profile">
+        <img src="https://via.placeholder.com/100" alt="صورة المعلم">
+        <div class="profile-info">
+          <h3>أ. محمد بن فيصل</h3>
+          <p>معلم ثانوي متخصص بالرياضيات والقدرات، خبرة 6 سنوات في التعليم.</p>
+          <p>📜 شهادات: بكالوريوس، دورات تدريبية، خبرة موثقة</p>
+        </div>
+      </div>
+
+      <!-- إضافة عرض -->
+      <div class="form-section">
+        <h4>➕ إضافة عرض جديد</h4>
+        <form>
+          <div class="form-group">
+            <label>المادة:</label>
+            <input type="text" placeholder="مثال: رياضيات، إنجليزي، تحفيظ">
+          </div>
+          <div class="form-group">
+            <label>المرحلة الدراسية:</label>
+            <select>
+              <option>ابتدائي</option>
+              <option>متوسط</option>
+              <option>ثانوي</option>
+              <option>تحفيظ</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>السعر (ريال):</label>
+            <input type="number" placeholder="مثال: 50">
+          </div>
+          <div class="form-group">
+            <label>الأيام المتاحة:</label>
+            <input type="text" placeholder="مثال: الأحد، الإثنين، الثلاثاء">
+          </div>
+          <div class="form-group">
+            <label>الوقت:</label>
+            <input type="text" placeholder="مثال: 5-6 مساءً">
+          </div>
+          <div class="form-group">
+            <label>وصف العرض:</label>
+            <textarea rows="3" placeholder="نبذة قصيرة عن العرض..."></textarea>
+          </div>
+          <button type="submit">🟦 نشر العرض</button>
+        </form>
+      </div>
+
+      <form action="/submit-offer" method="POST">
+        <!-- حقول المادة، المرحلة، السعر، إلخ -->
+      </form>
+
+
+      <!-- العروض السابقة -->
+      <div class="offers-list">
+        <h4>📋 عروضك الحالية</h4>
+        <div class="offer">
+          <strong>رياضيات - ثانوي</strong><br>
+          الأحد، الثلاثاء – 6 مساءً<br>
+          السعر: 60 ريال
+        </div>
+        <div class="offer">
+          <strong>تحفيظ - ابتدائي</strong><br>
+          الخميس – 4 مساءً<br>
+          السعر: 40 ريال
+        </div>
+      </div>
+
+    </div>
+  </body>
+  </html>

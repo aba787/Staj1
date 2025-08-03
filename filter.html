@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>الصفحة الرئيسية - عروض المعلمين</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Tajawal', sans-serif;
+      background-color: #f5f7fb;
+    }
+
+    header {
+      background-color: #013a75;
+      padding: 20px;
+      color: white;
+      font-size: 22px;
+      text-align: center;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 20px;
+    }
+
+    .top-bar input {
+      width: 70%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .top-bar button {
+      background-color: #013a75;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .filter-panel {
+      display: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      padding: 0 20px 20px;
+    }
+
+    .filter-panel select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      min-width: 150px;
+    }
+
+    .section-title {
+      margin: 10px 25px 10px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #013a75;
+    }
+
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding: 0 20px 30px;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: calc(50% - 10px);
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 18px;
+      color: #222;
+    }
+
+    .card p {
+      margin: 8px 0;
+      font-size: 15px;
+      color: #555;
+    }
+
+    .price {
+      color: #e60023;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .negotiable::after {
+      content: " 💬 قابل للتفاوض";
+      font-size: 13px;
+      color: #555;
+    }
+
+    .contact-btn {
+      background-color: #013a75;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+  <header>📚 العروض المتاحة من المعلمين الخصوصيين</header>
+
+    <div class="top-bar">
+      <input type="text" id="searchInput" placeholder="ابحث عن معلم، مادة، مرحلة...">
+      <button onclick="toggleFilters()">تصفية</button>
+    </div>
+
+    <div class="filter-panel" id="filters">
+      <select id="filter-subject">
+        <option disabled selected>اختر المادة</option>
+        <option>عربي</option>
+        <option>رياضيات</option>
+        <option>إنجليزي</option>
+      </select>
+      <select id="filter-grade">
+        <option disabled selected>اختر المرحلة</option>
+        <option>ابتدائي</option>
+        <option>متوسط</option>
+        <option>ثانوي</option>
+        <option>تحفيظ</option>
+      </select>
+      <select id="filter-day">
+        <option disabled selected>اختر اليوم</option>
+        <option>الأحد</option>
+        <option>الإثنين</option>
+        <option>الثلاثاء</option>
+        <option>الأربعاء</option>
+        <option>الخميس</option>
+      </select>
+      <select id="filter-time">
+        <option disabled selected>اختر الوقت</option>
+        <option>4:00 - 5:00</option>
+        <option>5:00 - 6:00</option>
+        <option>6:00 - 7:00</option>
+      </select>
+    </div>
+
+    <div class="cards-container" id="offersContainer"></div>
+
+    <script>
+      function toggleFilters() {
+        const panel = document.getElementById('filters');
+        panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+      }
+
+      function createOfferCard(offer) {
+        return `
+          <div class="card">
+            <h3>${offer.teacher}</h3>
+            <p>المادة: ${offer.subject}</p>
+            <p>المرحلة: ${offer.grade}</p>
+            <p>الأيام: ${offer.days}</p>
+            <p>الوقت: ${offer.time}</p>
+            <p class="price negotiable">${offer.price} ريال</p>
+            <button class="contact-btn">طلب حصة</button>
+          </div>
+        `;
+      }
+
+      async function loadOffers() {
+        const res = await fetch('/offers');
+        const data = await res.json();
+        const container = document.getElementById('offersContainer');
+        container.innerHTML = data.map(createOfferCard).join('');
+      }
+
+      loadOffers();
+    </script>
+  </body>
+  </html>

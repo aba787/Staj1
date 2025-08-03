@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>محادثة</title>
+  <style>
+    body { font-family: 'Tajawal', sans-serif; background: #f7f7f7; padding: 20px; }
+    #chat-box { height: 300px; overflow-y: scroll; border: 1px solid #ccc; background: #fff; padding: 10px; }
+    .msg { margin: 10px 0; }
+    .student { color: blue; }
+    .teacher { color: green; }
+  </style>
+</head>
+<body>
+  <h3>💬 المحادثة مع المعلم</h3>
+  <div id="chat-box"></div>
+  <input type="text" id="message" placeholder="اكتب رسالتك هنا" />
+  <button onclick="sendMessage()">إرسال</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
+      authDomain: "siraj-74f58.firebaseapp.com",
+      databaseURL: "https://siraj-74f58-default-rtdb.firebaseio.com",
+      projectId: "siraj-74f58",
+      storageBucket: "siraj-74f58.appspot.com",
+      messagingSenderId: "60485496189",
+      appId: "1:60485496189:web:10dcae7bd8865f91d47014"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const roomId = "room_demo123"; // 🔁 استبدله عند الربط الحقيقي
+    const sender = "student"; // أو teacher
+
+    const chatRef = ref(db, "chat_rooms/" + roomId + "/messages");
+
+    function sendMessage() {
+      const message = document.getElementById('message').value;
+      if (message.trim()) {
+        push(chatRef, { sender, text: message, timestamp: Date.now() });
+        document.getElementById('message').value = '';
+      }
+    }
+
+    const chatBox = document.getElementById('chat-box');
+    onChildAdded(chatRef, snapshot => {
+      const msg = snapshot.val();
+      const div = document.createElement('div');
+      div.className = 'msg ' + msg.sender;
+      div.textContent = (msg.sender === 'student' ? '👤 طالب: ' : '🎓 معلم: ') + msg.text;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }); 
+
+    // Express backend snippet to generate room and redirect
+    const express = require('express');
+    const path = require('path');
+    const { v4: uuidv4 } = require('uuid');
+    const app = express();
+
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.static('public'));
+
+    // عندما يضغط الطالب على "طلب حصة"
+    app.post('/request-session', (req, res) => {
+      const { studentId, teacherId } = req.body;
+      const roomId = uuidv4();
+
+      // ملاحظة: في التطبيق الحقيقي، خزّن roomId في قاعدة البيانات أو Firebase هنا
+
+      // إعادة التوجيه لصفحة المحادثة
+      res.redirect(`/chat.html?roomId=${roomId}&user=student`);
+    });
+
+    // هذه الصفحة تفتح عند الدخول إلى الشات مباشرة
+    app.get('/chat.html', (req, res) => {
+      res.sendFile(path.join(__dirname, 'public', 'chat.html'));
+    });
+
+  </script>
+</body>
+</html>
