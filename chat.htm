@@ -81,6 +81,25 @@
     app.get('/chat.html', (req, res) => {
       res.sendFile(path.join(__dirname, 'public', 'chat.html'));
     });
+import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const db = getFirestore();
+const teacherUID = auth.currentUser.uid;
+const studentUID = "student-uid-selected"; // خذيه من اختيار المستخدم
+
+const convoId = `${teacherUID}_${studentUID}`;
+const convoRef = doc(db, "conversations", convoId);
+
+// إرسال رسالة:
+async function sendMessage(text) {
+  await updateDoc(convoRef, {
+    messages: arrayUnion({
+      sender: teacherUID,
+      text,
+      timestamp: new Date()
+    })
+  });
+}
 
   </script>
 </body>
