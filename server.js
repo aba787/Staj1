@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,7 +23,9 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
   console.log(`📥 تسجيل دخول من: ${email}, كلمة المرور: ${password}`);
-  res.send('✅ تم تسجيل الدخول (تجريبي)');
+
+  // هنا يجب تتحقق من صحة البيانات (auth)، ثم توجه الصفحة:
+  res.redirect('/filter.html'); // بعد تسجيل الدخول
 });
 
 // صفحة خدمة العملاء
@@ -61,11 +64,9 @@ app.post('/support', async (req, res) => {
 app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'register.html'));
 });
-
 app.get('/register-student', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'register-student.html'));
 });
-
 app.get('/register-parent', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'register-parent.html'));
 });
@@ -110,30 +111,25 @@ ${notes}
   }
 });
 
+// إنشاء غرفة محادثة جديدة وتوجيه المستخدم إليها
+app.post('/request-session', (req, res) => {
+  const roomId = uuidv4();
+  // تخزين roomId في قاعدة بيانات لو حبيت
+  res.redirect(`/chat.html?roomId=${roomId}&user=student`);
+});
+
+// صفحة المحادثة
+app.get('/chat.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'chat.html'));
+});
+
+// صفحة الإعدادات
+app.get('/settings', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'settings.html'));
+});
+
 // تشغيل الخادم
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
 
-res.redirect('/filter.html');  // بعد تسجيل الدخول
-// صفحة الإعدادات
-app.get('/settings', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'settings.html'));
-});
-import { db } from "./firebase.js";
-import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-window.addUser = async function () {
-  const username = document.getElementById("username").value;
-  if (!username) return alert("الاسم مطلوب");
-
-  try {
-    await addDoc(collection(db, "users"), {
-      name: username,
-      createdAt: new Date(),
-    });
-    alert("تمت إضافة المستخدم");
-  } catch (e) {
-    console.error("خطأ:", e);
-  }
-}
