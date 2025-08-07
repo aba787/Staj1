@@ -2,183 +2,413 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>لوحة تحكم المعلم</title>
   <style>
     body {
-      font-family: 'Tajawal', sans-serif;
+      font-family: 'Cairo', sans-serif;
       margin: 0;
-      padding: 0;
-      background-color: #f2f4f8;
+      color: #333;
+      background: #f0f2f5;
     }
-
     header {
       background-color: #013a75;
       color: white;
-      padding: 20px;
-      text-align: center;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1100;
+    }
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .profile-header img {
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+    }
+    .notification-icon, .menu-icon {
       font-size: 22px;
+      cursor: pointer;
     }
-
+    .menu-icon {
+      margin-left: 10px;
+    }
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 250px;
+      background-color: #013a75;
+      color: white;
+      padding: 20px;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 1050;
+      overflow-y: auto;
+    }
+    .sidebar.open {
+      transform: translateX(0);
+    }
+    .sidebar h3 {
+      margin-top: 0;
+      font-size: 20px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #0551a5;
+      padding-bottom: 10px;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 15px;
+      font-weight: bold;
+      padding: 8px 10px;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+    .sidebar a:hover {
+      background-color: #0551a5;
+    }
     .container {
-      padding: 25px;
-      max-width: 1000px;
-      margin: auto;
+      padding: 90px 20px 20px 20px;
+      margin-right: 20px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
     }
-
-    .profile {
+    .profile, .form-section, .offers-list, .chat-section, .alerts-section, .profile-edit, .ratings-section, .schedule-section, .stats-cards {
       background: white;
       padding: 20px;
+      margin-bottom: 20px;
       border-radius: 10px;
-      margin-bottom: 25px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .profile {
       display: flex;
       gap: 20px;
       align-items: center;
     }
-
     .profile img {
+      border-radius: 50%;
       width: 100px;
       height: 100px;
-      border-radius: 50%;
       object-fit: cover;
     }
-
-    .profile-info {
-      flex: 1;
-    }
-
-    .profile-info h3 {
-      margin: 0;
-      font-size: 20px;
-      color: #013a75;
-    }
-
-    .form-section {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 25px;
-    }
-
-    .form-section h4 {
-      margin-bottom: 15px;
-      color: #013a75;
-    }
-
     .form-group {
       margin-bottom: 15px;
     }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-
     input, select, textarea {
       width: 100%;
       padding: 10px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
+      font-size: 16px;
+      box-sizing: border-box;
     }
-
     button {
       background-color: #013a75;
       color: white;
       padding: 10px 20px;
+      font-size: 16px;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
       cursor: pointer;
-      font-size: 15px;
+      transition: background-color 0.3s;
     }
-
-    .offers-list {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
+    button:hover {
+      background-color: #0551a5;
     }
-
     .offer {
-      border-bottom: 1px solid #ddd;
       padding: 10px 0;
+      border-bottom: 1px solid #ddd;
     }
-
-    .offer:last-child {
-      border-bottom: none;
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .chat-section > div {
+      box-sizing: border-box;
+    }
+    .chat-section > div ul {
+      list-style: none;
+      padding: 0;
+    }
+    .chat-section > div ul li {
+      margin-bottom: 8px;
+    }
+    .chat-section > div ul li a {
+      color: #013a75;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .chat-section > div ul li a:hover {
+      text-decoration: underline;
+    }
+    .stats-cards {
+      display: flex;
+      gap: 15px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .stats-cards > div {
+      flex: 1 1 calc(33.333% - 10px);
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .stats-cards h5 {
+      margin-bottom: 10px;
+      font-weight: normal;
+      font-size: 16px;
+    }
+    .stats-cards p {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 0;
+    }
+    @media (max-width: 768px) {
+      .profile {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .stats-cards {
+        flex-direction: column;
+      }
+      .stats-cards > div {
+        flex: 1 1 100%;
+      }
+      .chat-section > div {
+        flex-direction: column;
+      }
+      .chat-section > div > div {
+        width: 100% !important;
+      }
     }
   </style>
-  </head>
-  <body>
-    <header>🎓 لوحة المعلم</header>
-    <div class="container">
 
-      <!-- البروفايل -->
-      <div class="profile">
-        <img src="https://via.placeholder.com/100" alt="صورة المعلم">
-        <div class="profile-info">
-          <h3>أ. محمد بن فيصل</h3>
-          <p>معلم ثانوي متخصص بالرياضيات والقدرات، خبرة 6 سنوات في التعليم.</p>
-          <p>📜 شهادات: بكالوريوس، دورات تدريبية، خبرة موثقة</p>
-        </div>
-      </div>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 
-      <!-- إضافة عرض -->
-      <div class="form-section">
-        <h4>➕ إضافة عرض جديد</h4>
-        <form>
-          <div class="form-group">
-            <label>المادة:</label>
-            <input type="text" placeholder="مثال: رياضيات، إنجليزي، تحفيظ">
-          </div>
-          <div class="form-group">
-            <label>المرحلة الدراسية:</label>
-            <select>
-              <option>ابتدائي</option>
-              <option>متوسط</option>
-              <option>ثانوي</option>
-              <option>تحفيظ</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>السعر (ريال):</label>
-            <input type="number" placeholder="مثال: 50">
-          </div>
-          <div class="form-group">
-            <label>الأيام المتاحة:</label>
-            <input type="text" placeholder="مثال: الأحد، الإثنين، الثلاثاء">
-          </div>
-          <div class="form-group">
-            <label>الوقت:</label>
-            <input type="text" placeholder="مثال: 5-6 مساءً">
-          </div>
-          <div class="form-group">
-            <label>وصف العرض:</label>
-            <textarea rows="3" placeholder="نبذة قصيرة عن العرض..."></textarea>
-          </div>
-          <button type="submit">🟦 نشر العرض</button>
-        </form>
-      </div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
+      authDomain: "siraj-74f58.firebaseapp.com",
+      projectId: "siraj-74f58",
+      storageBucket: "siraj-74f58.appspot.com",
+      messagingSenderId: "60485496189",
+      appId: "1:60485496189:web:10dcae7bd8865f91d47014",
+      measurementId: "G-1097R9KTSZ"
+    };
 
-      <form action="/submit-offer" method="POST">
-        <!-- حقول المادة، المرحلة، السعر، إلخ -->
-      </form>
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+</head>
+<body>
+  <div class="sidebar" id="sidebar">
+    <h3>القائمة</h3>
+    <a href="#">🏠 الرئيسية</a>
+    <a href="#">👤 الملف الشخصي</a>
+    <a href="#">📬 المحادثات</a>
+    <a href="#">⭐ التقييمات</a>
+    <a href="#">📅 المواعيد</a>
+    <a href="#">📊 الإحصائيات</a>
+  </div>
 
-
-      <!-- العروض السابقة -->
-      <div class="offers-list">
-        <h4>📋 عروضك الحالية</h4>
-        <div class="offer">
-          <strong>رياضيات - ثانوي</strong><br>
-          الأحد، الثلاثاء – 6 مساءً<br>
-          السعر: 60 ريال
-        </div>
-        <div class="offer">
-          <strong>تحفيظ - ابتدائي</strong><br>
-          الخميس – 4 مساءً<br>
-          السعر: 40 ريال
-        </div>
-      </div>
-
+  <header>
+    <div class="profile-header">
+      <span class="menu-icon" onclick="toggleSidebar()">☰</span>
+      <img src="https://via.placeholder.com/100" alt="صورة المعلم" />
+      <span>أ. محمد بن فيصل</span>
     </div>
-  </body>
-  </html>
+    <div class="notification-icon" onclick="alert('🔔 لا توجد إشعارات حالياً')">🔔</div>
+  </header>
+
+  <div class="container">
+    <div class="profile">
+      <img src="https://via.placeholder.com/100" alt="صورة المعلم" />
+      <div class="profile-info">
+        <h3>أ. محمد بن فيصل</h3>
+        <p>معلم ثانوي متخصص بالرياضيات والقدرات، خبرة 6 سنوات في التعليم.</p>
+        <p>📜 شهادات: بكالوريوس، دورات تدريبية، خبرة موثقة</p>
+      </div>
+    </div>
+
+    <div class="alerts-section">
+      <h4>🚨 تنبيهات سريعة</h4>
+      <ul>
+        <li>⏰ لديك حصة بعد ساعتين مع الطالب أحمد.</li>
+        <li>❌ الطالب سارة قامت بإلغاء الحصة المجدولة اليوم.</li>
+      </ul>
+    </div>
+
+    <div class="stats-cards">
+      <div>
+        <h5>📚 عدد الحصص هذا الأسبوع</h5>
+        <p>12</p>
+      </div>
+      <div>
+        <h5>💰 الأرباح الحالية</h5>
+        <p>720 ريال</p>
+      </div>
+      <div>
+        <h5>⭐ متوسط التقييم</h5>
+        <p>4.8</p>
+      </div>
+    </div>
+
+    <div class="profile-edit">
+      <h4>⚙️ تعديل الملف الشخصي</h4>
+      <div class="form-group">
+        <label>الاسم:</label>
+        <input type="text" placeholder="اسم المعلم" />
+      </div>
+      <div class="form-group">
+        <label>السعر الأساسي للساعة (ريال):</label>
+        <input type="number" placeholder="مثال: 50" />
+      </div>
+      <div class="form-group">
+        <label>نبذة:</label>
+        <textarea placeholder="نبذة عنك..." rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>منهجك الدراسي:</label>
+        <input type="text" placeholder="مثال: رياضيات ثانوي" />
+      </div>
+      <button>💾 حفظ التعديلات</button>
+    </div>
+
+    <div class="profile-edit">
+      <h4>🖼️ تغيير صورة الحساب</h4>
+      <input type="file" accept="image/*" />
+      <button>📤 رفع الصورة</button>
+    </div>
+
+    <div class="form-section">
+      <h4>➕ إضافة عرض جديد</h4>
+      <form>
+        <div class="form-group">
+          <label>المادة:</label>
+          <input type="text" placeholder="مثال: رياضيات، إنجليزي، تحفيظ" />
+        </div>
+        <div class="form-group">
+          <label>المرحلة الدراسية:</label>
+          <select>
+            <option>ابتدائي</option>
+            <option>متوسط</option>
+            <option>ثانوي</option>
+            <option>تحفيظ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>السعر (ريال):</label>
+          <input type="number" placeholder="مثال: 50" />
+        </div>
+        <div class="form-group">
+          <label>الأيام المتاحة:</label>
+          <input type="text" placeholder="مثال: الأحد، الإثنين، الثلاثاء" />
+        </div>
+        <div class="form-group">
+          <label>الوقت:</label>
+          <input type="text" placeholder="مثال: 5-6 مساءً" />
+        </div>
+        <div class="form-group">
+          <label>وصف العرض:</label>
+          <textarea rows="3" placeholder="نبذة قصيرة عن العرض..."></textarea>
+        </div>
+        <button type="submit">🟦 نشر العرض</button>
+      </form>
+    </div>
+
+    <div class="offers-list">
+      <h4>📋 عروضك الحالية</h4>
+      <div class="offer">
+        <strong>رياضيات - ثانوي</strong><br />
+        الأحد، الثلاثاء – 6 مساءً<br />
+        السعر: 60 ريال
+      </div>
+      <div class="offer">
+        <strong>تحفيظ - ابتدائي</strong><br />
+        الخميس – 4 مساءً<br />
+        السعر: 40 ريال
+      </div>
+    </div>
+
+    <div class="chat-section">
+      <h4>💬 المحادثات</h4>
+      <div style="display:flex; gap:15px; flex-wrap: wrap;">
+        <div style="width: 200px; border-left:1px solid #ddd; padding:10px; box-sizing:border-box;">
+          <strong>👥 الطلاب:</strong>
+          <ul>
+            <li><a href="#" onclick="openChat('أحمد')">أحمد</a></li>
+            <li><a href="#" onclick="openChat('سارة')">سارة</a></li>
+          </ul>
+        </div>
+        <div style="flex: 1; min-width: 300px; padding:10px; box-sizing:border-box;">
+          <div class="chat-header">
+            <span id="chatStudent">اختر طالب</span>
+            <button onclick="alert('فتح نافذة الحجز')">📅 حجز حصة</button>
+          </div>
+          <div id="chatBox" style="min-height:200px; background:#f9f9f9; padding:10px; border-radius:6px;">
+            ...
+          </div>
+        </div>
+      </div>
+      <p>📩 بجانب أيقونة الرسائل سهم صغير يظهر قائمة الطلبة.</p>
+      <p>👤 عند الضغط على اسم الطالب تظهر المحادثة في الواجهة.</p>
+      <p>📅 يوجد زر "حجز حصة" بجانب اسم الطالب أعلى المحادثة لتحديد الموعد والتاريخ.</p>
+    </div>
+
+    <div class="ratings-section">
+      <h4>⭐ التقييمات</h4>
+      <ul>
+        <li>الطالب عبدالله: ⭐⭐⭐⭐ - "شرح ممتاز ومفيد جدًا!" <button>رد</button></li>
+        <li>الطالبة نورة: ⭐⭐⭐⭐⭐ - "متمكن وصبور" <button>رد</button></li>
+      </ul>
+    </div>
+
+    <div class="schedule-section">
+      <h4>📅 جدول المواعيد والحجوزات</h4>
+      <h5>🔒 المواعيد المتاحة:</h5>
+      <ul>
+        <li>الاثنين - 4:00 مساءً حتى 6:00 مساءً <button>✏️ تعديل</button> <button>❌ حذف</button></li>
+        <li>الأربعاء - 5:00 مساءً حتى 7:00 مساءً <button>✏️ تعديل</button> <button>❌ حذف</button></li>
+      </ul>
+      <button>➕ إضافة فترة جديدة</button>
+
+      <h5>📋 الحجوزات السابقة:</h5>
+      <ul>
+        <li>الأحد - 2:00 مساءً - الطالب فهد ✅ مكتملة</li>
+        <li>الثلاثاء - 6:00 مساءً - الطالب مها ❌ ألغيت</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    function openChat(studentName) {
+      document.getElementById('chatStudent').innerText = studentName;
+      document.getElementById('chatBox').innerHTML = `<p>🗨️ تبدأ المحادثة مع ${studentName} هنا...</p>`;
+    }
+  </script>
+</body>
+</html>
