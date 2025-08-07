@@ -1,0 +1,24 @@
+<input type="file" id="profile-image-input" />
+<button id="upload-btn">رفع الصورة</button>
+<img id="preview" />
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const storage = getStorage();
+const db = getFirestore();
+
+document.getElementById("upload-btn").addEventListener("click", async () => {
+  const file = document.getElementById("profile-image-input").files[0];
+  const uid = auth.currentUser.uid;
+  const storageRef = ref(storage, `teachers/${uid}/profile.jpg`);
+
+  await uploadBytes(storageRef, file);
+  const downloadURL = await getDownloadURL(storageRef);
+
+  await updateDoc(doc(db, "teachers", uid), {
+    profileImage: downloadURL
+  });
+
+  document.getElementById("preview").src = downloadURL;
+  alert("تم رفع الصورة بنجاح");
+});
