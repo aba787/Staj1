@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>لوحة تحكم الأدمن - المحادثات</title>
+  <style>
+    body { font-family: 'Tajawal', sans-serif; padding: 20px; background: #f7f7f7; }
+    #rooms { width: 200px; float: right; border: 1px solid #ccc; background: #fff; height: 400px; overflow-y: auto; padding: 10px; }
+    #chat { margin-right: 220px; border: 1px solid #ccc; background: #fff; height: 400px; overflow-y: auto; padding: 10px; }
+    .room-item { cursor: pointer; padding: 5px; border-bottom: 1px solid #eee; }
+    .room-item:hover { background: #f0f0f0; }
+    .msg { margin: 10px 0; }
+    .student { color: blue; }
+    .teacher { color: green; }
+  </style>
+</head>
+<body>
+  <h2>لوحة تحكم الأدمن</h2>
+  <div id="rooms"><strong>غرف الدردشة</strong><br>جاري تحميل...</div>
+  <div id="chat"><strong>اختر غرفة لعرض المحادثة</strong></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, onValue, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
+      authDomain: "siraj-74f58.firebaseapp.com",
+      databaseURL: "https://siraj-74f58-default-rtdb.firebaseio.com",
+      projectId: "siraj-74f58",
+      storageBucket: "siraj-74f58.appspot.com",
+      messagingSenderId: "60485496189",
+      appId: "1:60485496189:web:10dcae7bd8865f91d47014"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const roomsDiv = document.getElementById('rooms');
+    const chatDiv = document.getElementById('chat');
+
+    // استعراض جميع غرف الدردشة
+    const roomsRef = ref(db, 'chat_rooms');
+    onValue(roomsRef, (snapshot) => {
+      const rooms = snapshot.val() || {};
+      roomsDiv.innerHTML = '<strong>غرف الدردشة</strong><br>';
+      for (const roomId in rooms) {
+        const div = document.createElement('div');
+        div.className = 'room-item';
+        div.textContent = roomId;
+        div.onclick = () => showRoomMessages(roomId);
+        roomsDiv.appendChild(div);
+      }
+      if (Object.keys(rooms).length === 0) {
+        roomsDiv.innerHTML += '<p>لا توجد غرف دردشة حالياً.</p>';
+      }
+    });
+
+    function showRoomMessages(roomId) {
+      chatDiv.innerHTML = `<strong>المحادثة في الغرفة: ${roomId}</strong><br>`;
+      const messagesRef = ref(db, `chat_rooms/${roomId}/messages`);
+
+      // تفريغ الدردشة قبل تحميل جديدة
+      chatDiv.innerHTML = `<strong>المحادثة في الغرفة: ${roomId}</strong><br>جاري التحميل...`;
+
+      // نزيل أي مستمع سابق لتجنب تكرار الرسائل
+      // هذا مثال مبسط، تحسينه يكون بإدارة المستمعين (Listeners)
+
+      // إعادة تحميل الرسائل كاملة عند أي تغيير
+      onValue(messagesRef, (snapshot) => {
+        const messages = snapshot.val() || {};
+        chatDiv.innerHTML = `<strong>المحادثة في الغرفة: ${roomId}</strong><br>`;
+        for (const msgKey in messages) {
+          const msg = messages[msgKey];
+          const div = document.createElement('div');
+          div.className = 'msg ' + msg.sender;
+          div.textContent = (msg.sender === 'student' ? '👤 طالب: ' : '🎓 معلم: ') + msg.text;
+          chatDiv.appendChild(div);
+        }
+        if (Object.keys(messages).length === 0) {
+          chatDiv.innerHTML += '<p>لا توجد رسائل في هذه الغرفة.</p>';
+        }
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+      });
+    }
+  </script>
+</body>
+</html>
