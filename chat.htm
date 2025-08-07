@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <h3>💬 المحادثة مع المعلم</h3>
+  <h3>💬 المحادثة</h3>
   <div id="chat-box"></div>
   <input type="text" id="message" placeholder="اكتب رسالتك هنا" />
   <button onclick="sendMessage()">إرسال</button>
@@ -34,20 +34,23 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const roomId = "room_demo123"; // 🔁 استبدله عند الربط الحقيقي
-    const sender = "student"; // أو teacher
+    // اقرأ roomId وsender من الرابط URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomId = urlParams.get('roomId') || 'room_demo123';
+    const sender = urlParams.get('user') || 'student'; // student أو teacher
 
     const chatRef = ref(db, "chat_rooms/" + roomId + "/messages");
+    const chatBox = document.getElementById('chat-box');
 
     function sendMessage() {
-      const message = document.getElementById('message').value;
-      if (message.trim()) {
+      const messageInput = document.getElementById('message');
+      const message = messageInput.value.trim();
+      if (message) {
         push(chatRef, { sender, text: message, timestamp: Date.now() });
-        document.getElementById('message').value = '';
+        messageInput.value = '';
       }
     }
 
-    const chatBox = document.getElementById('chat-box');
     onChildAdded(chatRef, snapshot => {
       const msg = snapshot.val();
       const div = document.createElement('div');
@@ -55,52 +58,8 @@
       div.textContent = (msg.sender === 'student' ? '👤 طالب: ' : '🎓 معلم: ') + msg.text;
       chatBox.appendChild(div);
       chatBox.scrollTop = chatBox.scrollHeight;
-    }); 
-
-    // Express backend snippet to generate room and redirect
-    const express = require('express');
-    const path = require('path');
-    const { v4: uuidv4 } = require('uuid');
-    const app = express();
-
-    app.use(express.urlencoded({ extended: true }));
-    app.use(express.static('public'));
-
-    // عندما يضغط الطالب على "طلب حصة"
-    app.post('/request-session', (req, res) => {
-      const { studentId, teacherId } = req.body;
-      const roomId = uuidv4();
-
-      // ملاحظة: في التطبيق الحقيقي، خزّن roomId في قاعدة البيانات أو Firebase هنا
-
-      // إعادة التوجيه لصفحة المحادثة
-      res.redirect(`/chat.html?roomId=${roomId}&user=student`);
     });
-
-    // هذه الصفحة تفتح عند الدخول إلى الشات مباشرة
-    app.get('/chat.html', (req, res) => {
-      res.sendFile(path.join(__dirname, 'public', 'chat.html'));
-    });
-import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-const db = getFirestore();
-const teacherUID = auth.currentUser.uid;
-const studentUID = "student-uid-selected"; // خذيه من اختيار المستخدم
-
-const convoId = `${teacherUID}_${studentUID}`;
-const convoRef = doc(db, "conversations", convoId);
-
-// إرسال رسالة:
-async function sendMessage(text) {
-  await updateDoc(convoRef, {
-    messages: arrayUnion({
-      sender: teacherUID,
-      text,
-      timestamp: new Date()
-    })
-  });
-}
-
   </script>
 </body>
 </html>
+
