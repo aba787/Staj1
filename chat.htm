@@ -4,11 +4,28 @@
   <meta charset="UTF-8" />
   <title>محادثة</title>
   <style>
-    body { font-family: 'Tajawal', sans-serif; background: #f7f7f7; padding: 20px; }
-    #chat-box { height: 300px; overflow-y: scroll; border: 1px solid #ccc; background: #fff; padding: 10px; }
-    .msg { margin: 10px 0; }
-    .student { color: blue; }
-    .teacher { color: green; }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: #f7f7f7;
+      padding: 20px;
+    }
+    #chat-box {
+      height: 300px;
+      overflow-y: scroll;
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 10px;
+    }
+    .msg {
+      margin: 10px 0;
+      word-wrap: break-word;
+    }
+    .student {
+      color: blue;
+    }
+    .teacher {
+      color: green;
+    }
   </style>
 </head>
 <body>
@@ -34,7 +51,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // اقرأ roomId وsender من الرابط URL
     const urlParams = new URLSearchParams(window.location.search);
     const roomId = urlParams.get('roomId') || 'room_demo123';
     const sender = urlParams.get('user') || 'student'; // student أو teacher
@@ -45,10 +61,13 @@
     function sendMessage() {
       const messageInput = document.getElementById('message');
       const message = messageInput.value.trim();
-      if (message) {
-        push(chatRef, { sender, text: message, timestamp: Date.now() });
-        messageInput.value = '';
-      }
+      if (!message) return;
+      push(chatRef, {
+        sender,
+        text: message,
+        timestamp: Date.now()
+      });
+      messageInput.value = '';
     }
 
     onChildAdded(chatRef, snapshot => {
@@ -62,4 +81,3 @@
   </script>
 </body>
 </html>
-
