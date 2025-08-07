@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>إعدادات الحساب</title>
   <style>
     body {
@@ -11,7 +11,6 @@
       margin: 0;
       padding-bottom: 90px;
     }
-
     header {
       background-color: #013a75;
       color: white;
@@ -19,13 +18,11 @@
       font-size: 22px;
       text-align: center;
     }
-
     .container {
       max-width: 700px;
       margin: auto;
       padding: 20px;
     }
-
     .section {
       background: white;
       border-radius: 12px;
@@ -33,19 +30,16 @@
       margin-bottom: 20px;
       box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
-
     h3 {
       margin-top: 0;
       color: #013a75;
     }
-
     label {
       display: block;
       margin-top: 10px;
       font-weight: bold;
       color: #444;
     }
-
     input, select {
       width: 100%;
       padding: 10px;
@@ -54,7 +48,6 @@
       border: 1px solid #ccc;
       font-size: 14px;
     }
-
     .btn {
       margin-top: 20px;
       background-color: #013a75;
@@ -65,22 +58,18 @@
       font-size: 15px;
       cursor: pointer;
     }
-
     .btn-danger {
       background-color: #e60023;
       margin-top: 15px;
     }
-
     .switch {
       display: flex;
       align-items: center;
       margin-top: 10px;
     }
-
     .switch input {
       margin-left: 10px;
     }
-
     footer {
       position: fixed;
       bottom: 0;
@@ -91,14 +80,12 @@
       justify-content: space-around;
       padding: 12px 0;
     }
-
     footer a {
       text-decoration: none;
       color: #013a75;
       font-weight: bold;
       font-size: 14px;
     }
-
     @media (max-width: 600px) {
       h3 {
         font-size: 18px;
@@ -114,55 +101,142 @@
 </head>
 <body>
 
-  <header>⚙️ إعدادات الحساب</header>
+  <header>⚙️ إعدادات حساب <span id="user-type"></span></header>
 
   <div class="container">
 
     <!-- معلومات الحساب -->
     <div class="section">
       <h3>👤 معلومات الحساب</h3>
-      <label>الاسم الكامل</label>
-      <input type="text" value="محمد خالد">
+      <label for="fullName">الاسم الكامل</label>
+      <input type="text" id="fullName" />
 
-      <label>البريد الإلكتروني</label>
-      <input type="email" value="student@email.com">
+      <label for="email">البريد الإلكتروني</label>
+      <input type="email" id="email" />
 
-      <label>رقم الجوال</label>
-      <input type="tel" value="+966 555 123 456">
+      <label for="phone">رقم الجوال</label>
+      <input type="tel" id="phone" />
     </div>
 
     <!-- كلمة المرور -->
     <div class="section">
       <h3>🔐 تغيير كلمة المرور</h3>
-      <label>كلمة المرور الحالية</label>
-      <input type="password">
-      <label>كلمة المرور الجديدة</label>
-      <input type="password">
+      <label for="currentPassword">كلمة المرور الحالية</label>
+      <input type="password" id="currentPassword" />
+
+      <label for="newPassword">كلمة المرور الجديدة</label>
+      <input type="password" id="newPassword" />
     </div>
 
     <!-- الإشعارات -->
     <div class="section">
       <h3>🔔 الإشعارات</h3>
       <div class="switch">
-        <input type="checkbox" checked>
-        <label>تفعيل التذكيرات عبر البريد</label>
+        <input type="checkbox" id="notifications" />
+        <label for="notifications">تفعيل التذكيرات عبر البريد</label>
       </div>
     </div>
 
     <!-- اللغة -->
     <div class="section">
       <h3>🌍 اللغة</h3>
-      <select>
-        <option selected>العربية</option>
-        <option>English</option>
+      <select id="language">
+        <option value="ar">العربية</option>
+        <option value="en">English</option>
       </select>
     </div>
 
-    <button class="btn">💾 حفظ التغييرات</button>
-    <button class="btn btn-danger">❌ حذف الحساب</button>
+    <button class="btn" id="saveBtn">💾 حفظ التغييرات</button>
+    <button class="btn btn-danger" id="deleteBtn">❌ حذف الحساب</button>
 
   </div>
 
+  <script>
+    // جلب نوع المستخدم من الرابط (student أو teacher)
+    const urlParams = new URLSearchParams(window.location.search);
+    const userType = urlParams.get('user') || 'student'; // افتراضي: طالب
+    document.getElementById('user-type').textContent = userType === 'teacher' ? 'المعلم' : 'الطالب';
+
+    // مفتاح التخزين المحلي حسب المستخدم
+    const storageKey = 'account_' + userType;
+
+    // تحميل بيانات الحساب من LocalStorage
+    function loadAccount() {
+      const data = localStorage.getItem(storageKey);
+      if (!data) return;
+
+      const account = JSON.parse(data);
+
+      document.getElementById('fullName').value = account.fullName || '';
+      document.getElementById('email').value = account.email || '';
+      document.getElementById('phone').value = account.phone || '';
+      // كلمة المرور ما نحفظها هنا لأسباب أمان، فقط للتغيير
+      document.getElementById('notifications').checked = account.notifications || false;
+      document.getElementById('language').value = account.language || 'ar';
+    }
+
+    // حفظ بيانات الحساب في LocalStorage
+    function saveAccount() {
+      const account = {
+        fullName: document.getElementById('fullName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        notifications: document.getElementById('notifications').checked,
+        language: document.getElementById('language').value
+      };
+
+      // هنا ممكن تضيف تحقق بسيط من المدخلات لو حابب
+      if (!account.fullName || !account.email) {
+        alert('الرجاء ملء الاسم والبريد الإلكتروني.');
+        return;
+      }
+
+      // كلمة المرور: 
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      if (newPassword && !currentPassword) {
+        alert('يجب إدخال كلمة المرور الحالية لتغيير كلمة المرور.');
+        return;
+      }
+      // هنا ما نخزن كلمة المرور لأنها فقط لتغيير، لكن ممكن تربطها بخادم خارجي
+      // لو حابب، تقدر تضيف منطق تحقق كلمة المرور هنا
+
+      localStorage.setItem(storageKey, JSON.stringify(account));
+      alert('تم حفظ التغييرات.');
+      clearPasswordFields();
+    }
+
+    // حذف بيانات الحساب
+    function deleteAccount() {
+      if (!confirm('هل أنت متأكد من حذف الحساب؟ لا يمكن التراجع عن هذا الإجراء.')) return;
+      localStorage.removeItem(storageKey);
+      alert('تم حذف الحساب.');
+      clearForm();
+    }
+
+    // مسح حقول كلمة المرور
+    function clearPasswordFields() {
+      document.getElementById('currentPassword').value = '';
+      document.getElementById('newPassword').value = '';
+    }
+
+    // مسح كامل النموذج
+    function clearForm() {
+      document.getElementById('fullName').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('phone').value = '';
+      clearPasswordFields();
+      document.getElementById('notifications').checked = false;
+      document.getElementById('language').value = 'ar';
+    }
+
+    // ربط الأزرار
+    document.getElementById('saveBtn').addEventListener('click', saveAccount);
+    document.getElementById('deleteBtn').addEventListener('click', deleteAccount);
+
+    // تحميل بيانات الحساب عند فتح الصفحة
+    loadAccount();
+  </script>
 
 </body>
 </html>
