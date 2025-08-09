@@ -68,17 +68,79 @@
     }
   </style>
 </head>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>تسجيل الدخول</title>
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: #f5f7fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-box {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+    }
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin: 10px 0 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #013a75;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #012a5a;
+    }
+    .signup-link {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .signup-link a {
+      color: #013a75;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+    .error-message {
+      color: red;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+  </style>
+</head>
 <body>
   <div class="form-container">
     <h2>تسجيل كطالب</h2>
-    <form>
-      <input type="text" placeholder="الاسم الكامل" required>
-      <input type="email" placeholder="البريد الإلكتروني" required>
-      <input type="password" placeholder="كلمة المرور" required>
-      <input type="text" placeholder="اسم المدرسة" required>
-      
+    <form id="signupForm">
+      <input type="text" id="fullName" placeholder="الاسم الكامل" required />
+      <input type="email" id="email" placeholder="البريد الإلكتروني" required />
+      <input type="password" id="password" placeholder="كلمة المرور" required />
+      <input type="text" id="school" placeholder="اسم المدرسة" required />
       <div class="phone-group">
-        <select required>
+        <select id="phoneCode" required>
           <option value="+966">🇸🇦 +966</option>
           <option value="+971">🇦🇪 +971</option>
           <option value="+965">🇰🇼 +965</option>
@@ -86,19 +148,78 @@
           <option value="+968">🇴🇲 +968</option>
           <option value="+20">🇪🇬 +20</option>
         </select>
-        <input type="tel" placeholder="رقم الهاتف" required>
+        <input type="tel" id="phoneNumber" placeholder="رقم الهاتف" required />
       </div>
-
-      <select required>
-        <option value="">اختر المرحلة التعليمية</option>
+      <select id="educationStage" required>
+        <option value="" disabled selected>اختر المرحلة التعليمية</option>
         <option value="ابتدائي">المرحلة الابتدائية</option>
         <option value="متوسط">المرحلة المتوسطة</option>
         <option value="ثانوي">المرحلة الثانوية</option>
         <option value="جامعي">المرحلة الجامعية</option>
       </select>
-
-      <a href="filter.html" class="register-btn">تسجيل</a>
+      <button type="submit" class="register-btn">تسجيل</button>
     </form>
   </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
+      authDomain: "siraj-74f58.firebaseapp.com",
+      projectId: "siraj-74f58",
+      storageBucket: "siraj-74f58.appspot.com",
+      messagingSenderId: "60485496189",
+      appId: "1:60485496189:web:10dcae7bd8865f91d47014",
+      measurementId: "G-1097R9KTSZ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const signupForm = document.getElementById('signupForm');
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const fullName = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const school = document.getElementById('school').value.trim();
+      const phoneCode = document.getElementById('phoneCode').value;
+      const phoneNumber = document.getElementById('phoneNumber').value.trim();
+      const educationStage = document.getElementById('educationStage').value;
+
+      try {
+        // إنشاء حساب Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // حفظ بيانات إضافية في Firestore
+        await setDoc(doc(db, 'students', user.uid), {
+          fullName,
+          email,
+          school,
+          phone: phoneCode + phoneNumber,
+          educationStage,
+          verified: false // للحساب غير مؤكد بعد
+        });
+
+        // إرسال بريد تحقق
+        await sendEmailVerification(user);
+
+        // تسجيل الدخول تلقائي
+        await signInWithEmailAndPassword(auth, email, password);
+
+        // نقل لصفحة تحقق OTP (هنا ممكن تضيف التحقق برقم الهاتف)
+        window.location.href = 'verify.html?uid=' + user.uid;
+
+      } catch (error) {
+        alert('خطأ: ' + error.message);
+      }
+    });
+  </script>
 </body>
 </html>
