@@ -175,6 +175,12 @@
           </div>
         `;
       }
+document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (!urlParams.has('filter')) {
+    document.getElementById('filters').style.display = 'none';
+  }
+});
 
       async function loadOffers() {
         const res = await fetch('/offers');
