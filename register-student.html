@@ -130,96 +130,144 @@
       font-size: 14px;
     }
   </style>
+     .step { display: none; }
+  .step.active { display: block; }
+  .form-nav { margin-top: 15px; }
+  button { padding: 10px 20px; cursor: pointer; }
+
+  /* إضافات خفيفة ما تكسر شي */
+  body { font-family: system-ui, "Segoe UI", Tahoma, Arial; padding: 20px; }
+  input, select { display:block; width:100%; margin:8px 0; padding:10px; }
+  .form-nav { display:flex; gap:10px; }
+</style>
 </head>
 <body>
-  <div class="form-container">
-    <h2>تسجيل كطالب</h2>
-    <form id="signupForm">
-      <input type="text" id="fullName" placeholder="الاسم الكامل" required />
-      <input type="email" id="email" placeholder="البريد الإلكتروني" required />
-      <input type="password" id="password" placeholder="كلمة المرور" required />
-      <input type="text" id="school" placeholder="اسم المدرسة" required />
-      <div class="phone-group">
-        <select id="phoneCode" required>
-          <option value="+966">🇸🇦 +966</option>
-          <option value="+971">🇦🇪 +971</option>
-          <option value="+965">🇰🇼 +965</option>
-          <option value="+973">🇧🇭 +973</option>
-          <option value="+968">🇴🇲 +968</option>
-          <option value="+20">🇪🇬 +20</option>
-        </select>
-        <input type="tel" id="phoneNumber" placeholder="رقم الهاتف" required />
-      </div>
-      <select id="educationStage" required>
-        <option value="" disabled selected>اختر المرحلة التعليمية</option>
-        <option value="ابتدائي">المرحلة الابتدائية</option>
-        <option value="متوسط">المرحلة المتوسطة</option>
-        <option value="ثانوي">المرحلة الثانوية</option>
-        <option value="جامعي">المرحلة الجامعية</option>
-      </select>
-      <button type="submit" class="register-btn">تسجيل</button>
-    </form>
+
+<h2>تسجيل كطالب</h2>
+
+<form id="signupForm">
+  <!-- الخطوة 1 -->
+  <div class="step active" id="step1">
+    <input type="text" id="fullName" placeholder="الاسم الكامل" required />
+    <input type="email" id="email" placeholder="البريد الإلكتروني" required />
+    <input type="password" id="password" placeholder="كلمة المرور" required />
+    <div class="form-nav">
+      <button type="button" onclick="nextStep(2)">التالي</button>
+    </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  <!-- الخطوة 2 -->
+  <div class="step" id="step2">
+    <input type="text" id="school" placeholder="اسم المدرسة" required />
+    <div class="phone-group">
+      <!-- خلي دا صفحة لحالها لاحقاً إذا تبين -->
+      <select id="phoneCode" required>
+        <option value="+966">🇸🇦 +966</option>
+        <option value="+971">🇦🇪 +971</option>
+        <option value="+965">🇰🇼 +965</option>
+        <option value="+973">🇧🇭 +973</option>
+        <option value="+968">🇴🇲 +968</option>
+        <option value="+20">🇪🇬 +20</option>
+      </select>
+      <input type="tel" id="phoneNumber" placeholder="رقم الهاتف" required />
+    </div>
+    <div class="form-nav">
+      <button type="button" onclick="prevStep(1)">السابق</button>
+      <button type="button" onclick="nextStep(3)">التالي</button>
+    </div>
+  </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
-      authDomain: "siraj-74f58.firebaseapp.com",
-      projectId: "siraj-74f58",
-      storageBucket: "siraj-74f58.appspot.com",
-      messagingSenderId: "60485496189",
-      appId: "1:60485496189:web:10dcae7bd8865f91d47014",
-      measurementId: "G-1097R9KTSZ"
-    };
+  <!-- الخطوة 3 -->
+  <div class="step" id="step3">
+    <select id="educationStage" required>
+      <option value="" disabled selected>اختر المرحلة التعليمية</option>
+      <!-- السطر التالي فيه خطأ بناء؛ أبقيته كملاحظة بدون حذف -->
+      <!-- <option value=</option> -->
+      <option value="ابتدائي">المرحلة الابتدائية</option>
+      <option value="متوسط">المرحلة المتوسطة</option>
+      <option value="ثانوي">المرحلة الثانوية</option>
+      <option value="جامعي">المرحلة الجامعية</option>
+    </select>
+    <div class="form-nav">
+      <button type="button" onclick="prevStep(2)">السابق</button>
+      <!-- احتفظت بـ class القديمة + أضفت register-btn -->
+      <button type="submit" class="filter.html register-btn">تسجيل</button>
+    </div>
+  </div>
+</form>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+<script type="module">
+  // التنقل بين الخطوات
+  window.nextStep = function(step) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(`step${step}`).classList.add('active');
+  }
+  window.prevStep = function(step) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(`step${step}`).classList.add('active');
+  }
 
-    const signupForm = document.getElementById('signupForm');
-    signupForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+  // Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-      const fullName = document.getElementById('fullName').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const school = document.getElementById('school').value.trim();
-      const phoneCode = document.getElementById('phoneCode').value;
-      const phoneNumber = document.getElementById('phoneNumber').value.trim();
-      const educationStage = document.getElementById('educationStage').value;
+  const firebaseConfig = {
+    apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
+    authDomain: "siraj-74f58.firebaseapp.com",
+    projectId: "siraj-74f58",
+    storageBucket: "siraj-74f58.appspot.com",
+    messagingSenderId: "60485496189",
+    appId: "1:60485496189:web:10dcae7bd8865f91d47014",
+    measurementId: "G-1097R9KTSZ"
+  };
 
-      try {
-        // إنشاء حساب Firebase Auth
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-        // حفظ بيانات إضافية في Firestore
-        await setDoc(doc(db, 'students', user.uid), {
-          fullName,
-          email,
-          school,
-          phone: phoneCode + phoneNumber,
-          educationStage,
-          verified: false // للحساب غير مؤكد بعد
-        });
+  // التسجيل
+  const signupForm = document.getElementById('signupForm');
+  signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-        // إرسال بريد تحقق
-        await sendEmailVerification(user);
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const school = document.getElementById('school').value.trim();
+    const phoneCode = document.getElementById('phoneCode').value;
+    const phoneNumber = document.getElementById('phoneNumber').value.trim();
+    const educationStage = document.getElementById('educationStage').value;
 
-        // تسجيل الدخول تلقائي
-        await signInWithEmailAndPassword(auth, email, password);
+    try {
+      // إنشاء حساب
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-        // نقل لصفحة تحقق OTP (هنا ممكن تضيف التحقق برقم الهاتف)
-        window.location.href = 'verify.html?uid=' + user.uid;
+      // حفظ بيانات إضافية
+      await setDoc(doc(db, 'students', user.uid), {
+        fullName,
+        email,
+        school,
+        phone: phoneCode + phoneNumber,
+        educationStage,
+        verified: false
+      });
 
-      } catch (error) {
-        alert('خطأ: ' + error.message);
-      }
-    });
-  </script>
+      // إرسال بريد تحقق
+      await sendEmailVerification(user);
+
+      // تسجيل الدخول (عادةً يكون Signed-in بالفعل، بس نبقيها زي ما هي)
+      await signInWithEmailAndPassword(auth, email, password);
+
+      // تحويل لصفحة التحقق
+      window.location.href = 'verify.html?uid=' + user.uid;
+
+    } catch (error) {
+      alert('خطأ: ' + error.message);
+    }
+  });
+</script>
+
 </body>
 </html>
