@@ -69,15 +69,31 @@
   </style>
 </head>
 <body>
-  <div class="form-container">
-    <h2>تسجيل كولي أمر</h2>
-    <form>
-      <input type="text" placeholder="اسم ولي الأمر" required>
-      <input type="email" placeholder="البريد الإلكتروني" required>
-      <input type="password" placeholder="كلمة المرور" required>
+  <style>
+  .step { display: none; }
+  .step.active { display: block; }
+  .form-nav { margin-top: 15px; }
+  button { padding: 10px 20px; cursor: pointer; }
+</style>
 
+<div class="form-container">
+  <h2>تسجيل كولي أمر</h2>
+
+  <form id="parentSignupForm">
+    <!-- الخطوة 1 -->
+    <div class="step active" id="step1">
+      <input type="text" id="parentName" placeholder="اسم ولي الأمر" required>
+      <input type="email" id="parentEmail" placeholder="البريد الإلكتروني" required>
+      <input type="password" id="parentPassword" placeholder="كلمة المرور" required>
+      <div class="form-nav">
+        <button type="button" onclick="nextStep(2)">التالي</button>
+      </div>
+    </div>
+
+    <!-- الخطوة 2 -->
+    <div class="step" id="step2">
       <div class="phone-group">
-        <select required>
+        <select id="parentPhoneCode" required>
           <option value="+966">🇸🇦 +966</option>
           <option value="+971">🇦🇪 +971</option>
           <option value="+965">🇰🇼 +965</option>
@@ -85,10 +101,17 @@
           <option value="+968">🇴🇲 +968</option>
           <option value="+20">🇪🇬 +20</option>
         </select>
-        <input type="tel" placeholder="رقم الهاتف" required>
+        <input type="tel" id="parentPhoneNumber" placeholder="رقم الهاتف" required>
       </div>
+      <div class="form-nav">
+        <button type="button" onclick="prevStep(1)">السابق</button>
+        <button type="button" onclick="nextStep(3)">التالي</button>
+      </div>
+    </div>
 
-      <select required>
+    <!-- الخطوة 3 -->
+    <div class="step" id="step3">
+      <select id="relationship" required>
         <option value="">صلة القرابة</option>
         <option value="أب">أب</option>
         <option value="أم">أم</option>
@@ -96,9 +119,74 @@
         <option value="أخت">أخت</option>
         <option value="ولي">ولي آخر</option>
       </select>
+      <div class="form-nav">
+        <button type="button" onclick="prevStep(2)">السابق</button>
+        <button type="submit" class="register-btn">تسجيل</button>
+      </div>
+    </div>
+  </form>
+</div>
 
-      <a href="filter.html" class="register-btn">تسجيل</a>
-    </form>
-  </div>
-</body>
-</html>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
+    authDomain: "siraj-74f58.firebaseapp.com",
+    projectId: "siraj-74f58",
+    storageBucket: "siraj-74f58.appspot.com",
+    messagingSenderId: "60485496189",
+    appId: "1:60485496189:web:10dcae7bd8865f91d47014",
+    measurementId: "G-1097R9KTSZ"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  function nextStep(step) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(`step${step}`).classList.add('active');
+  }
+
+  function prevStep(step) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(`step${step}`).classList.add('active');
+  }
+
+  document.getElementById('parentSignupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const parentName = document.getElementById('parentName').value.trim();
+    const parentEmail = document.getElementById('parentEmail').value.trim();
+    const parentPassword = document.getElementById('parentPassword').value;
+    const parentPhoneCode = document.getElementById('parentPhoneCode').value;
+    const parentPhoneNumber = document.getElementById('parentPhoneNumber').value.trim();
+    const relationship = document.getElementById('relationship').value;
+
+    try {
+      // إنشاء الحساب
+      const userCredential = await createUserWithEmailAndPassword(auth, parentEmail, parentPassword);
+      const user = userCredential.user;
+
+      // تخزين البيانات في Firestore
+      await setDoc(doc(db, 'parents', user.uid), {
+        parentName,
+        email: parentEmail,
+        phone: parentPhoneCode + parentPhoneNumber,
+        relationship,
+        verified: false
+      });
+
+      // إرسال بريد التحقق
+      await sendEmailVerification(user);
+
+      alert('تم التسجيل بنجاح! يرجى التحقق من بريدك الإلكتروني.');
+      window.location.href = 'filter.html';
+    } catch (error) {
+      alert('خطأ: ' + error.message);
+    }
+  });
+</script>
