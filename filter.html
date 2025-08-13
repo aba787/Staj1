@@ -119,77 +119,100 @@
   </style>
   <header>📚 العروض المتاحة من المعلمين الخصوصيين</header>
 
-    <div class="top-bar">
-      <input type="text" id="searchInput" placeholder="ابحث عن معلم، مادة، مرحلة...">
-      <button onclick="toggleFilters()">تصفية</button>
-    </div>
+<div class="top-bar">
+  <input type="text" id="searchInput" placeholder="ابحث عن معلم، مادة، مرحلة...">
+  <button onclick="toggleFilters()">تصفية</button>
+</div>
 
-    <div class="filter-panel" id="filters">
-      <select id="filter-subject">
-        <option disabled selected>اختر المادة</option>
-        <option>عربي</option>
-        <option>رياضيات</option>
-        <option>إنجليزي</option>
-      </select>
-      <select id="filter-grade">
-        <option disabled selected>اختر المرحلة</option>
-        <option>ابتدائي</option>
-        <option>متوسط</option>
-        <option>ثانوي</option>
-        <option>تحفيظ</option>
-      </select>
-      <select id="filter-day">
-        <option disabled selected>اختر اليوم</option>
-        <option>الأحد</option>
-        <option>الإثنين</option>
-        <option>الثلاثاء</option>
-        <option>الأربعاء</option>
-        <option>الخميس</option>
-      </select>
-      <select id="filter-time">
-        <option disabled selected>اختر الوقت</option>
-        <option>4:00 - 5:00</option>
-        <option>5:00 - 6:00</option>
-        <option>6:00 - 7:00</option>
-      </select>
-    </div>
+<div class="filter-panel" id="filters">
+  <select id="filter-subject">
+    <option disabled selected>اختر المادة</option>
+    <option>عربي</option>
+    <option>رياضيات</option>
+    <option>إنجليزي</option>
+  </select>
+  <select id="filter-grade">
+    <option disabled selected>اختر المرحلة</option>
+    <option>ابتدائي</option>
+    <option>متوسط</option>
+    <option>ثانوي</option>
+    <option>تحفيظ</option>
+  </select>
+  <select id="filter-day">
+    <option disabled selected>اختر اليوم</option>
+    <option>الأحد</option>
+    <option>الإثنين</option>
+    <option>الثلاثاء</option>
+    <option>الأربعاء</option>
+    <option>الخميس</option>
+  </select>
+  <select id="filter-time">
+    <option disabled selected>اختر الوقت</option>
+    <option>4:00 - 5:00</option>
+    <option>5:00 - 6:00</option>
+    <option>6:00 - 7:00</option>
+  </select>
+</div>
 
-    <div class="cards-container" id="offersContainer"></div>
+<div class="cards-container" id="offersContainer"></div>
 
-    <script>
-      function toggleFilters() {
-        const panel = document.getElementById('filters');
-        panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
-      }
-
-      function createOfferCard(offer) {
-        return `
-          <div class="card">
-            <h3>${offer.teacher}</h3>
-            <p>المادة: ${offer.subject}</p>
-            <p>المرحلة: ${offer.grade}</p>
-            <p>الأيام: ${offer.days}</p>
-            <p>الوقت: ${offer.time}</p>
-            <p class="price negotiable">${offer.price} ريال</p>
-            <button class="contact-btn">طلب حصة</button>
-          </div>
-        `;
-      }
-document.addEventListener("DOMContentLoaded", () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  if (!urlParams.has('filter')) {
-    document.getElementById('filters').style.display = 'none';
+<script>
+  function toggleFilters() {
+    const panel = document.getElementById('filters');
+    panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
   }
-});
 
-      async function loadOffers() {
-        const res = await fetch('/offers');
-        const data = await res.json();
-        const container = document.getElementById('offersContainer');
-        container.innerHTML = data.map(createOfferCard).join('');
+  function bookLesson(teacherId) {
+    const time = prompt("اختر وقت الحصة (مثال: 5:00 - 6:00)");
+    if (!time) return;
+
+    fetch('/book', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ teacherId, time })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("تم الحجز بنجاح!");
+      } else {
+        alert("حدث خطأ أثناء الحجز.");
       }
+    });
+  }
 
-      loadOffers();
-    </script>
-  </body>
-  </html>
+  function createOfferCard(offer) {
+    return `
+      <div class="card">
+        <h3>${offer.teacher}</h3>
+        <p>المادة: ${offer.subject}</p>
+        <p>المرحلة: ${offer.grade}</p>
+        <p>الأيام: ${offer.days}</p>
+        <p>الوقت: ${offer.time}</p>
+        <p class="price negotiable">${offer.price} ريال</p>
+        <div class="card-actions">
+          <button class="contact-btn" onclick="bookLesson('${offer.id}')">طلب حصة</button>
+          <button class="chat-btn" onclick="window.location.href='/chat.html?teacher=${offer.id}'">مراسلة المعلم</button>
+        </div>
+      </div>
+    `;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (!urlParams.has('filter')) {
+      document.getElementById('filters').style.display = 'none';
+    }
+  });
+
+  async function loadOffers() {
+    const res = await fetch('/offers');
+    const data = await res.json();
+    const container = document.getElementById('offersContainer');
+    container.innerHTML = data.map(createOfferCard).join('');
+  }
+
+  loadOffers();
+</script>
+  
+
