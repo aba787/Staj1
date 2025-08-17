@@ -23,23 +23,38 @@
       display: inline-block;
     }
     header {
-      background-color: #4A90E2;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 40px;
-      flex-wrap: wrap;
-    }
-    header img {
-      height: 50px;
-    }
-    nav a {
-      color: white;
-      margin-left: 20px;
-      text-decoration: none;
-      font-weight: bold;
-    }
+    background-color: #4A90E2;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  header img {
+    height: 50px;
+  }
+
+  nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: 600;
+    transition: color 0.3s;
+  }
+
+  nav a:hover {
+    color: #FFD700;
+  }
     .hero {
       background-image: url('https://i.postimg.cc/X76Nrf9T/IMG-2583.jpg');
       background-size: cover;
@@ -120,11 +135,15 @@
 <body>
 
   <header>
+    <div class="logo">
+    <img src="logo.png" alt="شعار سراجك">
+    <span>سراجك</span>
+  </div>
     <nav>
-      <a href="#">الرئيسية</a>
-      <a href="#">عن سراجك</a>
-      <a href="#">كيف يعمل؟</a>
-      <a href="#">للمعلمين</a>
+      <a href="#index.html">الرئيسية</a>
+      <a href="#features">عن سراجك</a>
+      <a href="#steps">كيف يعمل؟</a>
+      <a href="#cta">للمعلمين</a>
       <a href="login.html">تسجيل الدخول</a>
     </nav>
   </header>
