@@ -7,21 +7,44 @@
   <style>
     body {
       font-family: "Cairo", sans-serif;
-      margin: 20px;
-      line-height: 1.8;
-      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      background-color: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: #fff;
+      max-width: 600px;
+      width: 90%;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      text-align: right;
     }
     h1 {
       color: #013a75;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    p {
+      margin-bottom: 15px;
+      color: #444;
     }
     .back-btn {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 20px;
+      display: block;
+      margin: 25px auto 0;
+      padding: 12px 25px;
       background: #013a75;
       color: white;
       text-decoration: none;
       border-radius: 8px;
+      font-size: 16px;
+      text-align: center;
+      transition: background 0.3s;
+      width: fit-content;
     }
     .back-btn:hover {
       background: #0051a3;
@@ -29,16 +52,14 @@
   </style>
 </head>
 <body>
-  <h1>شروط الاستخدام</h1>
-  <p>
-    باستخدامك لهذه المنصة فأنت توافق على الشروط التالية:
-  </p>
-  <p>
-    - الالتزام بالقوانين المحلية والدولية.<br>
-    - عدم إساءة استخدام المنصة أو خدماتها.<br>
-    - احترام خصوصية وأمان بقية المستخدمين.
-  </p>
+  <div class="card">
+    <h1>شروط الاستخدام</h1>
+    <p>باستخدامك لهذه المنصة فأنت توافق على الشروط التالية:</p>
+    <p>- الالتزام بالقوانين المحلية والدولية.</p>
+    <p>- عدم إساءة استخدام المنصة أو خدماتها.</p>
+    <p>- احترام خصوصية وأمان بقية المستخدمين.</p>
 
-  <a href="index.html" class="back-btn">⬅️ العودة للصفحة الرئيسية</a>
+    <a href="index.html" class="back-btn">⬅️ العودة للصفحة الرئيسية</a>
+  </div>
 </body>
 </html>
