@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>اختر مجال الدراسة</title>
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: #f5f6fa;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+      max-width: 1000px;
+      width: 90%;
+    }
+
+    .left-side {
+      flex: 1;
+      background: #f0f4ff;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .left-side img {
+      max-width: 200px;
+      margin-bottom: 20px;
+    }
+
+    .left-side h2 {
+      color: #013a75;
+      margin-bottom: 10px;
+    }
+
+    .left-side p {
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .right-side {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-height: 450px;
+      overflow-y: auto;
+    }
+
+    .option {
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .option img {
+      width: 40px;
+      height: 40px;
+      margin-left: 10px;
+    }
+
+    .option p {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .option.selected {
+      border-color: #013a75;
+      background: #f0f6ff;
+    }
+
+    .buttons {
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .btn-next {
+      background-color: #013a75;
+    }
+
+    .btn-next:hover {
+      background-color: #012a5a;
+    }
+
+    .btn-prev {
+      background-color: #888;
+    }
+
+    .btn-prev:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left-side">
+      <img src="https://cdn-icons-png.flaticon.com/512/456/456212.png" alt="تعليم">
+      <h2>سهلنا لك التواصل!</h2>
+      <p>سهولة في البحث والحجز والتواصل مع المدرسين من خلال الرسائل والمكالمات الهاتفية.</p>
+    </div>
+    <div class="right-side">
+      <h2>في أي المجالات ترغب بالدراسة؟</h2>
+      <div class="options-grid" id="studyOptions">
+        <div class="option" data-value="الرياضيات">
+          <img src="https://cdn-icons-png.flaticon.com/512/3105/3105692.png" alt="رياضيات">
+          <p>الرياضيات</p>
+        </div>
+        <div class="option" data-value="العلوم">
+          <img src="https://cdn-icons-png.flaticon.com/512/3105/3105644.png" alt="علوم">
+          <p>العلوم</p>
+        </div>
+        <div class="option" data-value="اللغة الإنجليزية">
+          <img src="https://cdn-icons-png.flaticon.com/512/3105/3105810.png" alt="إنجليزي">
+          <p>اللغة الإنجليزية</p>
+        </div>
+        <div class="option" data-value="الأعمال والتجارة">
+          <img src="https://cdn-icons-png.flaticon.com/512/3135/3135810.png" alt="أعمال">
+          <p>الأعمال والتجارة</p>
+        </div>
+        <div class="option" data-value="الحاسوب وتكنولوجيا المعلومات">
+          <img src="https://cdn-icons-png.flaticon.com/512/1995/1995574.png" alt="حاسوب">
+          <p>الحاسوب وتكنولوجيا المعلومات</p>
+        </div>
+        <div class="option" data-value="التسويق ووسائل التواصل الاجتماعي">
+          <img src="https://cdn-icons-png.flaticon.com/512/3076/3076993.png" alt="تسويق">
+          <p>التسويق ووسائل التواصل الاجتماعي</p>
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="1.html" onclick="goPrev()">السابق</button>
+        <button class="filter.html" onclick="submitOption()">التالي</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const options = document.querySelectorAll('.option');
+    let selectedValue = null;
+
+    options.forEach(option => {
+      option.addEventListener('click', () => {
+        options.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+        selectedValue = option.getAttribute('data-value');
+      });
+    });
+
+    function submitOption() {
+      if (!selectedValue) {
+        alert('الرجاء اختيار مجال أولاً');
+        return;
+      }
+      alert('تم اختيار: ' + selectedValue);
+      // مثال للانتقال للصفحة التالية
+      // window.location.href = "next.html?field=" + selectedValue;
+    }
+
+    function goPrev() {
+      alert('العودة للصفحة السابقة');
+      // مثال للعودة
+      // window.history.back();
+    }
+  </script>
+</body>
+</html>
