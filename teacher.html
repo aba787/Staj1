@@ -1,0 +1,32 @@
+<div id="offersContainer"></div>
+
+<script type="module">
+  import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const offersContainer = document.getElementById('offersContainer');
+
+  async function loadOffers() {
+    const querySnapshot = await getDocs(collection(window.db, "offers"));
+    offersContainer.innerHTML = '';
+    querySnapshot.forEach((doc) => {
+      const offer = doc.data();
+      const offerDiv = document.createElement('div');
+      offerDiv.classList.add('card');
+      offerDiv.innerHTML = `
+        <h3>${offer.teacher}</h3>
+        <p>المادة: ${offer.subject}</p>
+        <p>المرحلة: ${offer.grade}</p>
+        <p>الأيام: ${offer.days}</p>
+        <p>الوقت: ${offer.time}</p>
+        <p class="price negotiable">${offer.price} ريال</p>
+        <button onclick="openBookingForm('${doc.id}', '${offer.teacher}', '${offer.price}')">حجز حصة</button>
+        <button onclick="openChat('${offer.teacher}')">دردشة</button>
+      `;
+      offersContainer.appendChild(offerDiv);
+    });
+  }
+
+  loadOffers();
+
+  // فتح نموذج الحجز (هتضيفه بنفس الصفحة)
+</script>
