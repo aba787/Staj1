@@ -7,21 +7,44 @@
   <style>
     body {
       font-family: "Cairo", sans-serif;
-      margin: 20px;
-      line-height: 1.8;
-      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      background-color: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: #fff;
+      max-width: 600px;
+      width: 90%;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      text-align: right;
     }
     h1 {
       color: #013a75;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    p {
+      margin-bottom: 15px;
+      color: #444;
     }
     .back-btn {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 20px;
+      display: block;
+      margin: 25px auto 0;
+      padding: 12px 25px;
       background: #013a75;
       color: white;
       text-decoration: none;
       border-radius: 8px;
+      font-size: 16px;
+      text-align: center;
+      transition: background 0.3s;
+      width: fit-content;
     }
     .back-btn:hover {
       background: #0051a3;
@@ -29,16 +52,14 @@
   </style>
 </head>
 <body>
-  <h1>سياسة الخصوصية</h1>
-  <p>
-    نحن نحرص على حماية خصوصيتك. هذه الصفحة تشرح كيفية جمع واستخدام وحماية بياناتك الشخصية.
-  </p>
-  <p>
-    - لن نشارك بياناتك مع أطراف خارجية بدون إذنك.<br>
-    - نستخدم بياناتك فقط لتحسين تجربة التعليم.<br>
-    - لك الحق في طلب حذف بياناتك في أي وقت.
-  </p>
+  <div class="card">
+    <h1>سياسة الخصوصية</h1>
+    <p>نحن نحرص على حماية خصوصيتك. هذه الصفحة تشرح كيفية جمع واستخدام وحماية بياناتك الشخصية.</p>
+    <p>- لن نشارك بياناتك مع أطراف خارجية بدون إذنك.</p>
+    <p>- نستخدم بياناتك فقط لتحسين تجربة التعليم.</p>
+    <p>- لك الحق في طلب حذف بياناتك في أي وقت.</p>
 
-  <a href="index.html" class="back-btn">⬅️ العودة للصفحة الرئيسية</a>
+    <a href="index.html" class="back-btn">⬅️ العودة للصفحة الرئيسية</a>
+  </div>
 </body>
 </html>
