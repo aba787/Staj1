@@ -4,6 +4,61 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>سراجك</title>
+   <script type="module">
+    // Firebase App (the core Firebase SDK) is always required and must be listed first
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
+      authDomain: "siraj-74f58.firebaseapp.com",
+      projectId: "siraj-74f58",
+      storageBucket: "siraj-74f58.firebasestorage.app",
+      messagingSenderId: "60485496189",
+      appId: "1:60485496189:web:10dcae7bd8865f91d47014",
+      measurementId: "G-1097R9KTSZ"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+
+    // دوال تسجيل مستخدم جديد
+    window.registerUser = function(email, password) {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("تم التسجيل بنجاح!");
+          console.log(userCredential.user);
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    }
+
+    // دوال تسجيل الدخول
+    window.loginUser = function(email, password) {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("تم تسجيل الدخول!");
+          console.log(userCredential.user);
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    }
+
+    // دوال تسجيل الخروج
+    window.logoutUser = function() {
+      signOut(auth).then(() => {
+        alert("تم تسجيل الخروج!");
+      }).catch((error) => {
+        alert(error.message);
+      });
+    }
+  </script>
   <link href="https://i.postimg.cc/X76Nrf9T/IMG-2583.jpg" rel="stylesheet">
   <style>
     body {
@@ -134,82 +189,88 @@
 </head>
 <body>
 
-  <header>
-    <div class="logo">
+<header>
+  <div class="logo">
     <span>سراجك</span>
   </div>
-    <nav>
-      <a href="#index.html">الرئيسية</a>
-      <a href="#features">عن سراجك</a>
-      <a href="#steps">كيف يعمل؟</a>
-      <a href="#cta">للمعلمين</a>
-      <a href="login.html">تسجيل الدخول</a>
-    </nav>
-  </header>
+  <nav>
+    <a href="#index.html">الرئيسية</a>
+    <a href="#features">عن سراجك</a>
+    <a href="#steps">كيف يعمل؟</a>
+    <a href="#cta">للمعلمين</a>
+    <a href="login.html">تسجيل الدخول</a>
+  </nav>
+</header>
 
-  <div class="hero">
-    <div class="hero-text">
-      <h1>منصة تعليمية<br>,تربطك مع افضل المعلمين الخصوصين<br> بخطوات بسيطة و ذكية.</h1>
-     <a href="reee.html" class="start-btn">ابدأ الآن</a>
+<div class="hero">
+  <div class="hero-text">
+    <h1>
+      منصة تعليمية<br>
+      تربطك مع افضل المعلمين الخصوصين<br>
+      بخطوات بسيطة وذكية.
+    </h1>
+    <a href="reee.html" class="start-btn">ابدأ الآن</a>
+  </div>
+</div>
+
+<section>
+  <h2>ماذا نقدم؟</h2>
+  <div class="features">
+    <div class="box">
+      <img src="https://i.postimg.cc/prCFD8rh/IMG-2506.jpg" alt="">
+      <p>ابحث واختر معلمك بنفسك</p>
+    </div>
+    <div class="box">
+      <img src="https://i.postimg.cc/rsZpV9zJ/IMG-2508.jpg" alt="">
+      <p>احجز درسك بمرونة وبالوقت الذي يناسبك.</p>
+    </div>
+    <div class="box">
+      <img src="https://i.postimg.cc/3RshSCjT/payment.png" alt="">
+      <p>ادفع بأمان من خلال بوابتك الإلكترونية.</p>
+    </div>
+    <div class="box">
+      <img src="https://i.postimg.cc/hvZ5bdR7/star.png" alt="">
+      <p>قيم تجربتك يساعدنا في الإرتقاء بالتعليم.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>كيف تعمل المنصة؟</h2>
+  <div class="steps">
+    <div class="box">
+      <img src="https://i.postimg.cc/NFSpVLN1/request.png" alt="">
+      <p>سجل كطالب أو ولي أمر</p>
+    </div>
+    <div class="box">
+      <img src="https://i.postimg.cc/R0WL4PFP/IMG-2504.jpg" alt="">
+      <p>تصفح المعلمين حسب المادة والمستوى</p>
+    </div>
+    <div class="box">
+      <img src="https://i.postimg.cc/sgXp4npV/IMG-2505.jpg" alt="">
+      <p>احجز درس خصوصي مباشر.</p>
+    </div>
+    <div class="box">
+      <img src="https://i.postimg.cc/YqXF01TT/IMG-2507.jpg" alt="">
+      <p>تواصل مع المعلم وابدأ رحلتك بالتعلم</p>
     </div>
   </div>
 
-  <section>
-    <h2>ماذا نقدم؟</h2>
-    <div class="features">
-      <div class="box">
-        <img src="https://i.postimg.cc/prCFD8rh/IMG-2506.jpg" alt="">
-        <p>ابحث واختر معلمك بنفسك</p>
-      </div>
-      <div class="box">
-        <img src="https://i.postimg.cc/rsZpV9zJ/IMG-2508.jpg" alt="">
-        <p>احجز درسك بمرونة و بالوقت الذي يناسبك.</p>
-      </div>
-      <div class="box">
-        <img src="https://i.postimg.cc/3RshSCjT/payment.png" alt="">
-        <p>ادفع بأمان من خلال بوابتك الإلكترونية.</p>
-      </div>
-      <div class="box">
-        <img src="https://i.postimg.cc/hvZ5bdR7/star.png" alt="">
-        <p>قيم تجربتك يساعدنا في الإرتقاء بالتعليم.</p>
-      </div>
-    </div>
-  </section>
+  <div class="cta">
+    <h3>هل أنت معلم متميز؟</h3>
+    <p>انضم الى فريق "سراجك" وساهم في إضاءة طريق العلم للطالب.</p>
+    <a href="apply-teacher.html">
+      <button>سجل كمعلم</button>
+    </a>
+  </div>
+</section>
 
-  <section>
-    <h2>كيف تعمل المنصة؟</h2>
-    <div class="steps">
-      <div class="box">
-        <img src="https://i.postimg.cc/NFSpVLN1/request.png" alt="">
-        <p>سجل كطالب او ولي امر</p>
-      </div>
-      <div class="box">
-        <img src="https://i.postimg.cc/R0WL4PFP/IMG-2504.jpg" alt="">
-        <p>تصفح المعلمين حسب المادة والمستوى</p>
-      </div>
-      <div class="box">
-        <img src="https://i.postimg.cc/sgXp4npV/IMG-2505.jpg" alt="">
-        <p>احجز درس خصوصي مباشر.</p>
-      </div>
-      <div class="box">
-        <img src="https://i.postimg.cc/YqXF01TT/IMG-2507.jpg" alt="">
-        <p>تواصل مع المعلم و أبدأ رحلتك بالتعلم</p>
-      </div>
-    </div>
-    <div class="cta">
-      <h3>هل أنت معلم متميز؟</h3>
-      <p>انضم الى فريقك "سراجك" و ساهم في إضاءة طريق العلم للطالب.</p>
-      <a href="apply-teacher.html">
-        <button>سجل كمعلم</button>
-      </a>
-    </div>
-  </section>
-
-  <footer>
-    جميع الحقوق محفوظة © سراج 2023 |
-    <a href="privacy.html">سياسة الخصوصية</a> |
-    <a href="terms.html">شروط الاستخدام</a>
-  </footer>
+<footer>
+  جميع الحقوق محفوظة © سراج 2023 |
+  <a href="privacy.html">سياسة الخصوصية</a> |
+  <a href="terms.html">شروط الاستخدام</a>
+</footer>
 
 </body>
 </html>
+
