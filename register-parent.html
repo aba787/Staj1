@@ -146,12 +146,13 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  function nextStep(step) {
+  // خليها global عشان تشتغل مع onclick في HTML
+  window.nextStep = function(step) {
     document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
     document.getElementById(`step${step}`).classList.add('active');
   }
 
-  function prevStep(step) {
+  window.prevStep = function(step) {
     document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
     document.getElementById(`step${step}`).classList.add('active');
   }
@@ -167,11 +168,9 @@
     const relationship = document.getElementById('relationship').value;
 
     try {
-      // إنشاء الحساب
       const userCredential = await createUserWithEmailAndPassword(auth, parentEmail, parentPassword);
       const user = userCredential.user;
 
-      // تخزين البيانات في Firestore
       await setDoc(doc(db, 'parents', user.uid), {
         parentName,
         email: parentEmail,
@@ -180,11 +179,10 @@
         verified: false
       });
 
-      // إرسال بريد التحقق
       await sendEmailVerification(user);
 
-      alert('تم التسجيل بنجاح! يرجى التحقق من بريدك الإلكتروني.');
-      window.location.href = 'filter.html';
+      alert('تم التسجيل بنجاح! تحقق من بريدك الإلكتروني.');
+      window.location.href = 'filter.html'; // لازم الصفحة تكون موجودة
     } catch (error) {
       alert('خطأ: ' + error.message);
     }
