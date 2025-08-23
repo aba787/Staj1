@@ -133,38 +133,39 @@
     const db = getFirestore(app);
 
     // التسجيل
-    const signupForm = document.getElementById('signupForm');
-    signupForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+   signupForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-      const fullName = document.getElementById('fullName').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const school = document.getElementById('school').value.trim();
-      const phoneCode = document.getElementById('phoneCode').value;
-      const phoneNumber = document.getElementById('phoneNumber').value.trim();
-      const educationStage = document.getElementById('educationStage').value;
+  const fullName = document.getElementById('fullName').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const school = document.getElementById('school').value.trim();
+  const phoneCode = document.getElementById('phoneCode').value;
+  const phoneNumber = document.getElementById('phoneNumber').value.trim();
+  const educationStage = document.getElementById('educationStage').value;
 
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-        await setDoc(doc(db, 'students', user.uid), {
-          fullName,
-          email,
-          school,
-          phone: phoneCode + phoneNumber,
-          educationStage,
-          verified: false
-        });
-
-        await sendEmailVerification(user);
-
-        window.location.href = 'filter.html?uid=' + user.uid;
-      } catch (error) {
-        alert('خطأ: ' + error.message);
-      }
+    await setDoc(doc(db, 'students', user.uid), {
+      fullName,
+      email,
+      school,
+      phone: phoneCode + phoneNumber,
+      educationStage,
+      verified: false
     });
+
+    await sendEmailVerification(user);
+
+    // التغيير هنا: الانتقال مباشرة لصفحة العروض
+    window.location.href = 'filter.html';
+  } catch (error) {
+    alert('خطأ: ' + error.message);
+  }
+});
+
   </script>
 </body>
 </html>
