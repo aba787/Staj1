@@ -110,15 +110,15 @@
     </div>
 
     <!-- الخطوة 3 -->
-    <div class="step" id="step3">
-      <select id="relationship" required>
-        <option value="">صلة القرابة</option>
-        <option value="أب">أب</option>
-        <option value="أم">أم</option>
-        <option value="أخ">أخ</option>
-        <option value="أخت">أخت</option>
-        <option value="ولي">ولي آخر</option>
-      </select>
+
+    <select id="relationship" required>
+  <option value="" disabled selected>-- اختر صلة القرابة --</option>
+  <option value="أب">أب</option>
+  <option value="أم">أم</option>
+  <option value="أخ">أخ</option>
+  <option value="أخت">أخت</option>
+  <option value="ولي">ولي آخر</option>
+</select>
       <div class="form-nav">
         <button type="button" onclick="prevStep(2)">السابق</button>
         <button type="submit" class="register-btn">تسجيل</button>
@@ -127,64 +127,118 @@
   </form>
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+   <form id="parentSignupForm">
+      <!-- الخطوة 1 -->
+      <div class="step active" id="step1">
+        <input type="text" id="parentName" placeholder="اسم ولي الأمر" required>
+        <input type="email" id="parentEmail" placeholder="البريد الإلكتروني" required>
+        <input type="password" id="parentPassword" placeholder="كلمة المرور" required>
+        <div class="form-nav">
+          <button type="button" onclick="nextStep(2)">التالي</button>
+        </div>
+      </div>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
-    authDomain: "siraj-74f58.firebaseapp.com",
-    projectId: "siraj-74f58",
-    storageBucket: "siraj-74f58.appspot.com",
-    messagingSenderId: "60485496189",
-    appId: "1:60485496189:web:10dcae7bd8865f91d47014",
-    measurementId: "G-1097R9KTSZ"
-  };
+      <!-- الخطوة 2 -->
+      <div class="step" id="step2">
+        <div class="phone-group">
+          <select id="parentPhoneCode" required>
+            <option value="+966">🇸🇦 +966</option>
+            <option value="+971">🇦🇪 +971</option>
+            <option value="+965">🇰🇼 +965</option>
+            <option value="+973">🇧🇭 +973</option>
+            <option value="+968">🇴🇲 +968</option>
+            <option value="+20">🇪🇬 +20</option>
+          </select>
+          <input type="tel" id="parentPhoneNumber" placeholder="رقم الهاتف" required>
+        </div>
+        <div class="form-nav">
+          <button type="button" onclick="prevStep(1)">السابق</button>
+          <button type="button" onclick="nextStep(3)">التالي</button>
+        </div>
+      </div>
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+      <!-- الخطوة 3 -->
+      <div class="step" id="step3">
+        <select id="relationship" required>
+          <option value="" disabled selected>صلة القرابة</option>
+          <option value="أب">أب</option>
+          <option value="أم">أم</option>
+          <option value="أخ">أخ</option>
+          <option value="أخت">أخت</option>
+          <option value="ولي">ولي آخر</option>
+        </select>
+        <div class="form-nav">
+          <button type="button" onclick="prevStep(2)">السابق</button>
+          <button type="submit" class="register-btn">تسجيل</button>
+        </div>
+      </div>
+    </form>
+  </div>
 
-  // خليها global عشان تشتغل مع onclick في HTML
-  window.nextStep = function(step) {
-    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-    document.getElementById(`step${step}`).classList.add('active');
-  }
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  window.prevStep = function(step) {
-    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-    document.getElementById(`step${step}`).classList.add('active');
-  }
+    const firebaseConfig = {
+      apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
+      authDomain: "siraj-74f58.firebaseapp.com",
+      projectId: "siraj-74f58",
+      storageBucket: "siraj-74f58.appspot.com",
+      messagingSenderId: "60485496189",
+      appId: "1:60485496189:web:10dcae7bd8865f91d47014",
+      measurementId: "G-1097R9KTSZ"
+    };
 
-  document.getElementById('parentSignupForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    const parentName = document.getElementById('parentName').value.trim();
-    const parentEmail = document.getElementById('parentEmail').value.trim();
-    const parentPassword = document.getElementById('parentPassword').value;
-    const parentPhoneCode = document.getElementById('parentPhoneCode').value;
-    const parentPhoneNumber = document.getElementById('parentPhoneNumber').value.trim();
-    const relationship = document.getElementById('relationship').value;
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, parentEmail, parentPassword);
-      const user = userCredential.user;
-
-      await setDoc(doc(db, 'parents', user.uid), {
-        parentName,
-        email: parentEmail,
-        phone: parentPhoneCode + parentPhoneNumber,
-        relationship,
-        verified: false
-      });
-
-      await sendEmailVerification(user);
-
-      alert('تم التسجيل بنجاح! تحقق من بريدك الإلكتروني.');
-      window.location.href = 'filter.html'; // لازم الصفحة تكون موجودة
-    } catch (error) {
-      alert('خطأ: ' + error.message);
+    window.nextStep = function(step) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById(`step${step}`).classList.add('active');
     }
-  });
-</script>
+
+    window.prevStep = function(step) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById(`step${step}`).classList.add('active');
+    }
+
+    document.getElementById('parentSignupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const parentName = document.getElementById('parentName').value.trim();
+      const parentEmail = document.getElementById('parentEmail').value.trim();
+      const parentPassword = document.getElementById('parentPassword').value;
+      const parentPhoneCode = document.getElementById('parentPhoneCode').value;
+      const parentPhoneNumber = document.getElementById('parentPhoneNumber').value.trim();
+      const relationship = document.getElementById('relationship').value;
+
+      if (!parentName || !parentEmail || !parentPassword || !parentPhoneNumber || !relationship) {
+        alert('يرجى ملء جميع الحقول المطلوبة.');
+        return;
+      }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, parentEmail, parentPassword);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, 'parents', user.uid), {
+          parentName,
+          email: parentEmail,
+          phone: parentPhoneCode + parentPhoneNumber,
+          relationship,
+          verified: false
+        });
+
+        await sendEmailVerification(user);
+
+        alert('تم التسجيل بنجاح! تحقق من بريدك الإلكتروني.');
+        window.location.href = 'filter.html'; // الانتقال لصفحة العروض
+      } catch (error) {
+        alert('خطأ: ' + error.message);
+      }
+    });
+  </script>
+</body>
+  
