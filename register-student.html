@@ -160,7 +160,7 @@
 
         await sendEmailVerification(user);
 
-        window.location.href = 'verify.html?uid=' + user.uid;
+        window.location.href = 'filter.html?uid=' + user.uid;
       } catch (error) {
         alert('خطأ: ' + error.message);
       }
