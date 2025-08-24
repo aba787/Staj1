@@ -21,10 +21,7 @@
       width: 350px;
       text-align: center;
     }
-    h2 {
-      color: #013a75;
-      margin-bottom: 20px;
-    }
+    h2 { color: #013a75; margin-bottom: 20px; }
     input, select {
       width: 100%;
       padding: 12px;
@@ -33,16 +30,9 @@
       border-radius: 6px;
       font-size: 16px;
     }
-    .phone-group {
-      display: flex;
-      gap: 10px;
-    }
-    .phone-group select {
-      width: 35%;
-    }
-    .phone-group input {
-      width: 65%;
-    }
+    .phone-group { display: flex; gap: 10px; }
+    .phone-group select { width: 35%; }
+    .phone-group input { width: 65%; }
     button {
       width: 100%;
       padding: 12px;
@@ -54,15 +44,8 @@
       font-weight: bold;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #012a5a;
-    }
-    .form-nav {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 15px;
-    }
+    button:hover { background-color: #012a5a; }
+    .form-nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; }
     .step { display: none; }
     .step.active { display: block; }
   </style>
@@ -83,24 +66,26 @@
       </div>
 
       <!-- الخطوة 2 -->
-<div class="step" id="step2">
-  <input type="text" id="school" placeholder="اسم المدرسة" required />
-  <div class="phone-group">
-    <select id="phoneCode" required>
-      <option value="+966">🇸🇦 +966</option>
-      <option value="+971">🇦🇪 +971</option>
-      <option value="+965">🇰🇼 +965</option>
-      <option value="+973">🇧🇭 +973</option>
-      <option value="+968">🇴🇲 +968</option>
-      <option value="+20">🇪🇬 +20</option>
-    </select>
-    <input type="tel" id="phoneNumber" placeholder="رقم الهاتف" required />
+      <div class="step" id="step2">
+        <input type="text" id="school" placeholder="اسم المدرسة" required />
+        <div class="phone-group">
+          <select id="phoneCode" required>
+            <option value="+966">🇸🇦 +966</option>
+            <option value="+971">🇦🇪 +971</option>
+            <option value="+965">🇰🇼 +965</option>
+            <option value="+973">🇧🇭 +973</option>
+            <option value="+968">🇴🇲 +968</option>
+            <option value="+20">🇪🇬 +20</option>
+          </select>
+          <input type="tel" id="phoneNumber" placeholder="رقم الهاتف" required />
+        </div>
+        <div class="form-nav">
+          <button type="button" onclick="prevStep(1)">السابق</button>
+          <button type="submit">إنهاء التسجيل</button>
+        </div>
+      </div>
+    </form>
   </div>
-  <div class="form-nav">
-    <button type="button" onclick="prevStep(1)">السابق</button>
-    <button type="submit">إنهاء التسجيل</button>
-  </div>
-</div>
 
   <script type="module">
     // التنقل بين الخطوات
@@ -132,40 +117,38 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // التسجيل
-   signupForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
+    const signupForm = document.getElementById('signupForm');
 
-  const fullName = document.getElementById('fullName').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  const school = document.getElementById('school').value.trim();
-  const phoneCode = document.getElementById('phoneCode').value;
-  const phoneNumber = document.getElementById('phoneNumber').value.trim();
-  const educationStage = document.getElementById('educationStage').value;
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+      const fullName = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const school = document.getElementById('school').value.trim();
+      const phoneCode = document.getElementById('phoneCode').value;
+      const phoneNumber = document.getElementById('phoneNumber').value.trim();
 
-    await setDoc(doc(db, 'students', user.uid), {
-      fullName,
-      email,
-      school,
-      phone: phoneCode + phoneNumber,
-      educationStage,
-      verified: false
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, 'students', user.uid), {
+          fullName,
+          email,
+          school,
+          phone: phoneCode + phoneNumber,
+          verified: false
+        });
+
+        await sendEmailVerification(user);
+
+        // الانتقال مباشرة لصفحة العروض بعد التسجيل
+        window.location.href = 'filter.html';
+      } catch (error) {
+        alert('خطأ: ' + error.message);
+      }
     });
-
-    await sendEmailVerification(user);
-
-    // التغيير هنا: الانتقال مباشرة لصفحة العروض
-    window.location.href = 'filter.html';
-  } catch (error) {
-    alert('خطأ: ' + error.message);
-  }
-});
-
   </script>
 </body>
 </html>
