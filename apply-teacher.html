@@ -1,95 +1,140 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>طلب تقديم كمعلم</title>
-  <style>
-    body {
-      background-color: #e6f0ff;
-      font-family: 'Tajawal', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .form-container {
-      background: white;
-      padding: 30px;
-      width: 100%;
-      max-width: 450px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    h2 {
-      color: #013a75;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 2px solid #007bff;
-      border-radius: 6px;
-      font-size: 16px;
-    }
-
-    .phone-group {
-      display: flex;
-      gap: 10px;
-    }
-
-    .phone-group select {
-      width: 35%;
-    }
-
-    .phone-group input {
-      width: 65%;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #013a75;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0055aa;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>طلب تقديم كمعلم</title>
+<style>
+  body {
+    background-color: #e6f0ff;
+    font-family: 'Tajawal', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .form-container {
+    background: white;
+    padding: 30px;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  h2 { color: #013a75; }
+  input, select, textarea, button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid #007bff;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  .phone-group { display: flex; gap: 10px; }
+  .phone-group select { width: 35%; }
+  .phone-group input { width: 65%; }
+  .terms-box {
+    height: 100px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: right;
+    margin-bottom: 10px;
+  }
+  button { background-color: #013a75; color: white; border: none; font-weight: bold; cursor: pointer; }
+  button:hover { background-color: #0055aa; }
+</style>
 </head>
 <body>
-  <div class="form-container">
-    <h2>التقديم كمعلم</h2>
-    <form action="/apply-teacher" method="POST">
-      <input type="text" name="name" placeholder="الاسم الكامل" required>
-      <input type="text" name="subject" placeholder="التخصص" required>
+<div class="form-container">
+  <h2>التقديم كمعلم</h2>
+  <form id="teacherForm">
+    <div class="terms-box">
+      <h3>الشروط والقوانين:</h3>
+      <ul>
+        <li>يجب أن يكون المعلم مؤهلاً ومجرباً.</li>
+        <li>احترام الطلاب والالتزام بالمواعيد.</li>
+        <li>المنصة غير مسؤولة عن أي خلافات شخصية.</li>
+        <li>يجب تقديم بيانات صحيحة وموثوقة.</li>
+      </ul>
+    </div>
+    <label>
+      <input type="checkbox" id="agreeTerms" required>
+      أوافق على الشروط والقوانين
+    </label>
 
-      <div class="phone-group">
-        <select name="prefix" required>
-          <option value="+966">+966 🇸🇦</option>
-          <option value="+971">+971 🇦🇪</option>
-          <option value="+965">+965 🇰🇼</option>
-          <option value="+20">+20 🇪🇬</option>
-        </select>
-        <input type="tel" name="phone" placeholder="رقم الجوال" required>
-      </div>
+    <input type="text" id="name" placeholder="الاسم الكامل" required>
+    <input type="text" id="subject" placeholder="التخصص" required>
 
-      <input type="email" name="email" placeholder="البريد الإلكتروني" required>
+    <div class="phone-group">
+      <select id="prefix" required>
+        <option value="+966">+966 🇸🇦</option>
+        <option value="+971">+971 🇦🇪</option>
+        <option value="+965">+965 🇰🇼</option>
+        <option value="+20">+20 🇪🇬</option>
+      </select>
+      <input type="tel" id="phone" placeholder="رقم الجوال" required>
+    </div>
 
-      <textarea name="notes" rows="4" placeholder="نبذة / ملاحظات إضافية" required></textarea>
+    <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+    <textarea id="notes" rows="4" placeholder="نبذة / ملاحظات إضافية" required></textarea>
 
-      <a href="mailto:you@example.com?subject=عمل طلب ة&body= مرحبًا، أود العمل معاكم في" class="register-btn">إرسال الطلب</a>
-    </form>
-  </div>
+    <button type="submit">إرسال الطلب</button>
+  </form>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
+  authDomain: "siraj-74f58.firebaseapp.com",
+  projectId: "siraj-74f58",
+  storageBucket: "siraj-74f58.appspot.com",
+  messagingSenderId: "60485496189",
+  appId: "1:60485496189:web:10dcae7bd8865f91d47014"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById('teacherForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const agree = document.getElementById('agreeTerms').checked;
+  if (!agree) { alert('يجب الموافقة على الشروط أولاً.'); return; }
+
+  const name = document.getElementById('name').value.trim();
+  const subject = document.getElementById('subject').value.trim();
+  const prefix = document.getElementById('prefix').value;
+  const phone = document.getElementById('phone').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const notes = document.getElementById('notes').value.trim();
+
+  if (!name || !subject || !phone || !email || !notes) {
+    alert('يرجى ملء جميع الحقول.');
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, 'teacherApplications'), {
+      name,
+      subject,
+      phone: prefix + phone,
+      email,
+      notes,
+      status: 'pending',
+      submittedAt: serverTimestamp()
+    });
+    alert('تم إرسال طلبك بنجاح! سنتواصل معك قريباً.');
+    e.target.reset();
+  } catch (err) {
+    alert('حدث خطأ: ' + err.message);
+  }
+});
+</script>
 </body>
 </html>
