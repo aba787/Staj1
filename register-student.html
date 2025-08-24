@@ -53,10 +53,16 @@
 <body>
   <div class="form-container">
     <h2>تسجيل كطالب</h2>
+<!-- الخطوة 0: سؤال العمر -->
+<div class="step" id="step0">
+  <p>هل عمرك أقل من 18 سنة؟</p>
+  <button type="button" onclick="checkAge(true)">نعم</button>
+  <button type="button" onclick="checkAge(false)">لا</button>
+</div>
 
     <form id="signupForm">
       <!-- الخطوة 1 -->
-      <div class="step active" id="step1">
+      <div class="step" id="step1">
         <input type="text" id="fullName" placeholder="الاسم الكامل" required />
         <input type="email" id="email" placeholder="البريد الإلكتروني" required />
         <input type="password" id="password" placeholder="كلمة المرور" required />
@@ -88,6 +94,25 @@
   </div>
 
   <script type="module">
+
+
+// استبدال nextStep للخطوة الأولى بالتحكم بالعمر
+function checkAge(isUnder18) {
+  if(isUnder18) {
+    nextStep(1); // يكمل التسجيل الطبيعي
+  } else {
+    // إذا عمره 18 أو أكثر يروح لصفحة ولي الأمر
+    window.location.href = 'register-parent.html';
+  }
+}
+
+// بدء النموذج بالخطوة 0
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step0').classList.add('active');
+});
+
+    
     // التنقل بين الخطوات
     window.nextStep = function(step) {
       document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
