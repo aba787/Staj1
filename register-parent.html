@@ -54,7 +54,7 @@
 </head>
 <body>
   <div class="form-container">
-    <h2>تسجيل كولي أمر</h2>
+    <h2>تسجيل ولي أمر</h2>
 
     <form id="parentSignupForm">
       <!-- الخطوة 1 -->
@@ -108,6 +108,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import emailjs from "https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
@@ -132,6 +133,12 @@
       document.getElementById(`step${step}`).classList.add('active');
     }
 
+    function generateOTP(length = 6) {
+      let otp = '';
+      for (let i = 0; i < length; i++) otp += Math.floor(Math.random() * 10);
+      return otp;
+    }
+
     document.getElementById('parentSignupForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -142,12 +149,10 @@
       const parentPhoneNumber = document.getElementById('parentPhoneNumber').value.trim();
       const relationship = document.getElementById('relationship').value;
 
-      if (!parentName || !parentEmail || !parentPassword || !parentPhoneNumber || !relationship) {
-        alert('يرجى ملء جميع الحقول المطلوبة.');
-        return;
-      }
+      const otp = generateOTP();
 
       try {
+        // إنشاء حساب ولي الأمر في Firebase
         const userCredential = await createUserWithEmailAndPassword(auth, parentEmail, parentPassword);
         const user = userCredential.user;
 
@@ -156,13 +161,26 @@
           email: parentEmail,
           phone: parentPhoneCode + parentPhoneNumber,
           relationship,
+          otp,
           verified: false
         });
 
         await sendEmailVerification(user);
 
-        alert('تم التسجيل بنجاح! تحقق من بريدك الإلكتروني.');
-        window.location.href = 'filter.html';
+        // إرسال البريد مع رقم التوكيد
+        emailjs.send("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",{
+          to_name: parentName,
+          to_email: parentEmail,
+          otp: otp,
+          policy_link: "رابط_شروط_السياسة"
+        }, "YOUR_PUBLIC_KEY")
+        .then(() => {
+          alert('تم إرسال رسالة التوكيد على بريد ولي الأمر.');
+          window.location.href = 'filter.html';
+        }, (err) => {
+          alert('خطأ في إرسال البريد: ' + err.text);
+        });
+
       } catch (error) {
         alert('خطأ: ' + error.message);
       }
