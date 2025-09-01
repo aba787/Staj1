@@ -97,7 +97,7 @@
 
 
 // استبدال nextStep للخطوة الأولى بالتحكم بالعمر
-function checkAge(isUnder18) {
+window.checkAge = function(isUnder18) {
   if(isUnder18) {
     nextStep(1); // يكمل التسجيل الطبيعي
   } else {
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('step0').classList.add('active');
 });
 
-    
+
     // التنقل بين الخطوات
     window.nextStep = function(step) {
       document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await sendEmailVerification(user);
 
         // الانتقال مباشرة لصفحة العروض بعد التسجيل
-        window.location.href = 'filter.html';
+        window.location.href = './filter.html';
       } catch (error) {
         alert('خطأ: ' + error.message);
       }
