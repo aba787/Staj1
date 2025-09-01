@@ -2,11 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تسجيل كطالب</title>
+  <title>تسجيل طالب</title>
   <style>
     body {
+      background-color: #e6f0ff;
       font-family: 'Tajawal', sans-serif;
-      background: #f5f7fb;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -15,20 +15,22 @@
     }
     .form-container {
       background: white;
-      padding: 30px 40px;
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
       border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      width: 350px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       text-align: center;
     }
-    h2 { color: #013a75; margin-bottom: 20px; }
+    h2 { color: #013a75; }
     input, select {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
-      border: 1px solid #ccc;
+      border: 2px solid #007bff;
       border-radius: 6px;
       font-size: 16px;
+      box-sizing: border-box;
     }
     .phone-group { display: flex; gap: 10px; }
     .phone-group select { width: 35%; }
@@ -44,36 +46,30 @@
       font-weight: bold;
       cursor: pointer;
     }
-    button:hover { background-color: #012a5a; }
-    .form-nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; }
+    button:hover { background-color: #0055aa; }
     .step { display: none; }
     .step.active { display: block; }
+    .form-nav { margin-top: 15px; display: flex; justify-content: space-between; gap: 10px; }
   </style>
 </head>
 <body>
   <div class="form-container">
-    <h2>تسجيل كطالب</h2>
-<!-- الخطوة 0: سؤال العمر -->
-<div class="step" id="step0">
-  <p>هل عمرك أقل من 18 سنة؟</p>
-  <button type="button" onclick="checkAge(true)">نعم</button>
-  <button type="button" onclick="checkAge(false)">لا</button>
-</div>
+    <h2>تسجيل طالب (18+ سنة)</h2>
 
-    <form id="signupForm">
-      <!-- الخطوة 1 -->
-      <div class="step" id="step1">
-        <input type="text" id="fullName" placeholder="الاسم الكامل" required />
-        <input type="email" id="email" placeholder="البريد الإلكتروني" required />
-        <input type="password" id="password" placeholder="كلمة المرور" required />
+    <form id="studentSignupForm">
+      <!-- الخطوة 1: معلومات الطالب -->
+      <div class="step active" id="step1">
+        <input type="text" id="studentName" placeholder="اسم الطالب" required>
+        <input type="email" id="studentEmail" placeholder="البريد الإلكتروني" required>
+        <input type="password" id="studentPassword" placeholder="كلمة المرور" required>
         <div class="form-nav">
           <button type="button" onclick="nextStep(2)">التالي</button>
         </div>
       </div>
 
-      <!-- الخطوة 2 -->
+      <!-- الخطوة 2: معلومات إضافية -->
       <div class="step" id="step2">
-        <input type="text" id="school" placeholder="اسم المدرسة" required />
+        <input type="text" id="school" placeholder="اسم المدرسة/الجامعة" required />
         <div class="phone-group">
           <select id="phoneCode" required>
             <option value="+966">🇸🇦 +966</option>
@@ -94,38 +90,8 @@
   </div>
 
   <script type="module">
-
-
-// استبدال nextStep للخطوة الأولى بالتحكم بالعمر
-window.checkAge = function(isUnder18) {
-  if(isUnder18) {
-    nextStep(1); // يكمل التسجيل الطبيعي
-  } else {
-    // إذا عمره 18 أو أكثر يروح لصفحة ولي الأمر
-    window.location.href = 'register-parent.html';
-  }
-}
-
-// بدء النموذج بالخطوة 0
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-  document.getElementById('step0').classList.add('active');
-});
-
-
-    // التنقل بين الخطوات
-    window.nextStep = function(step) {
-      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-      document.getElementById(`step${step}`).classList.add('active');
-    }
-    window.prevStep = function(step) {
-      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-      document.getElementById(`step${step}`).classList.add('active');
-    }
-
-    // Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -142,34 +108,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const signupForm = document.getElementById('signupForm');
+    window.nextStep = function(step) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById(`step${step}`).classList.add('active');
+    }
 
-    signupForm.addEventListener('submit', async (e) => {
+    window.prevStep = function(step) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById(`step${step}`).classList.add('active');
+    }
+
+    document.getElementById('studentSignupForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const fullName = document.getElementById('fullName').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
+      const studentName = document.getElementById('studentName').value.trim();
+      const studentEmail = document.getElementById('studentEmail').value.trim();
+      const studentPassword = document.getElementById('studentPassword').value;
       const school = document.getElementById('school').value.trim();
       const phoneCode = document.getElementById('phoneCode').value;
       const phoneNumber = document.getElementById('phoneNumber').value.trim();
 
       try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        // إنشاء حساب الطالب في Firebase
+        const userCredential = await createUserWithEmailAndPassword(auth, studentEmail, studentPassword);
         const user = userCredential.user;
 
+        // حفظ بيانات الطالب
         await setDoc(doc(db, 'students', user.uid), {
-          fullName,
-          email,
-          school,
+          name: studentName,
+          email: studentEmail,
+          school: school,
           phone: phoneCode + phoneNumber,
-          verified: false
+          isAdult: true, // 18+ سنة
+          verified: true, // مباشرة لأنه بالغ
+          approved: true, // مباشرة لأنه بالغ
+          createdAt: new Date()
         });
 
-        await sendEmailVerification(user);
+        alert('تم إنشاء حسابك بنجاح! جاري التوجه إلى صفحة البحث عن المعلمين...');
 
-        // الانتقال مباشرة لصفحة العروض بعد التسجيل
-        window.location.href = './filter.html';
+        setTimeout(() => {
+          window.location.href = './filter.html';
+        }, 2000);
+
       } catch (error) {
         alert('خطأ: ' + error.message);
       }
