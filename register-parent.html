@@ -521,11 +521,11 @@ ${rejectUrl}
         // Delete from pending collection
         await deleteDoc(doc(db, 'pending_students', currentStudentId));
         
-        showMessage('تم تفعيل حساب الطالب بنجاح! يمكن للطالب الآن الوصول لصفحة البحث عن المعلمين.', 'success');
+        showMessage('تم تفعيل حساب الطالب بنجاح! جاري التوجه إلى صفحة البحث عن المعلمين...', 'success');
         
         setTimeout(() => {
           window.location.href = './filter.html';
-        }, 3000);
+        }, 2000);
       } catch (error) {
         showMessage('خطأ في تفعيل الحساب: ' + error.message, 'error');
       }
