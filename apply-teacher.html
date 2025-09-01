@@ -131,6 +131,10 @@ document.getElementById('teacherForm').addEventListener('submit', async (e) => {
     });
     alert('تم إرسال طلبك بنجاح! سنتواصل معك قريباً.');
     e.target.reset();
+    // توجيه المعلم إلى لوحة التحكم
+    setTimeout(() => {
+      window.location.href = '../public/teacher-dashboard.html';
+    }, 2000);
   } catch (err) {
     alert('حدث خطأ: ' + err.message);
   }
