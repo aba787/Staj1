@@ -68,93 +68,79 @@
       </div>
 
       <!-- الخطوة 2: معلومات إضافية -->
-      <div class="step" id="step2">
-        <input type="text" id="school" placeholder="اسم المدرسة/الجامعة" required />
-        <div class="phone-group">
-          <select id="phoneCode" required>
-            <option value="+966">🇸🇦 +966</option>
-            <option value="+971">🇦🇪 +971</option>
-            <option value="+965">🇰🇼 +965</option>
-            <option value="+973">🇧🇭 +973</option>
-            <option value="+968">🇴🇲 +968</option>
-            <option value="+20">🇪🇬 +20</option>
-          </select>
-          <input type="tel" id="phoneNumber" placeholder="رقم الهاتف" required />
-        </div>
-        <div class="form-nav">
-          <button type="button" onclick="prevStep(1)">السابق</button>
-          <button type="submit">إنهاء التسجيل</button>
-        </div>
-      </div>
-    </form>
+   <form id="studentSignupForm">
+  <!-- الخطوة 2: معلومات إضافية -->
+  <div class="step" id="step2">
+    <input type="text" id="school" placeholder="اسم المدرسة/الجامعة" required />
+    <div class="phone-group">
+      <select id="phoneCode" required>
+        <option value="+966">🇸🇦 +966</option>
+        <option value="+971">🇦🇪 +971</option>
+        <option value="+965">🇰🇼 +965</option>
+        <option value="+973">🇧🇭 +973</option>
+        <option value="+968">🇴🇲 +968</option>
+        <option value="+20">🇪🇬 +20</option>
+      </select>
+      <input type="tel" id="phoneNumber" placeholder="رقم الهاتف" required />
+    </div>
+    <div class="form-nav">
+      <button type="button" onclick="prevStep(1)">السابق</button>
+      <button type="submit">إنهاء التسجيل</button>
+    </div>
   </div>
+</form>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
-      authDomain: "siraj-74f58.firebaseapp.com",
-      projectId: "siraj-74f58",
-      storageBucket: "siraj-74f58.appspot.com",
-      messagingSenderId: "60485496189",
-      appId: "1:60485496189:web:10dcae7bd8865f91d47014",
-      measurementId: "G-1097R9KTSZ"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
+    authDomain: "siraj-74f58.firebaseapp.com",
+    projectId: "siraj-74f58",
+    storageBucket: "siraj-74f58.appspot.com",
+    messagingSenderId: "60485496189",
+    appId: "1:60485496189:web:10dcae7bd8865f91d47014",
+    measurementId: "G-1097R9KTSZ"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    window.nextStep = function(step) {
-      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-      document.getElementById(`step${step}`).classList.add('active');
+  document.getElementById('studentSignupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const studentName = document.getElementById('studentName').value.trim();
+    const studentEmail = document.getElementById('studentEmail').value.trim();
+    const studentPassword = document.getElementById('studentPassword').value;
+    const school = document.getElementById('school').value.trim();
+    const phoneCode = document.getElementById('phoneCode').value;
+    const phoneNumber = document.getElementById('phoneNumber').value.trim();
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, studentEmail, studentPassword);
+      const user = userCredential.user;
+
+      await setDoc(doc(db, 'students', user.uid), {
+        name: studentName,
+        email: studentEmail,
+        school: school,
+        phone: phoneCode + phoneNumber,
+        isAdult: true,
+        verified: true,
+        approved: true,
+        createdAt: new Date()
+      });
+
+      alert('تم إنشاء حسابك بنجاح!');
+
+      // انقله مباشرة لصفحة الفلترة
+      window.location.href = "filter.html";
+
+    } catch (error) {
+      alert('خطأ: ' + error.message);
     }
-
-    window.prevStep = function(step) {
-      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-      document.getElementById(`step${step}`).classList.add('active');
-    }
-
-    document.getElementById('studentSignupForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const studentName = document.getElementById('studentName').value.trim();
-      const studentEmail = document.getElementById('studentEmail').value.trim();
-      const studentPassword = document.getElementById('studentPassword').value;
-      const school = document.getElementById('school').value.trim();
-      const phoneCode = document.getElementById('phoneCode').value;
-      const phoneNumber = document.getElementById('phoneNumber').value.trim();
-
-      try {
-        // إنشاء حساب الطالب في Firebase
-        const userCredential = await createUserWithEmailAndPassword(auth, studentEmail, studentPassword);
-        const user = userCredential.user;
-
-        // حفظ بيانات الطالب
-        await setDoc(doc(db, 'students', user.uid), {
-          name: studentName,
-          email: studentEmail,
-          school: school,
-          phone: phoneCode + phoneNumber,
-          isAdult: true, // 18+ سنة
-          verified: true, // مباشرة لأنه بالغ
-          approved: true, // مباشرة لأنه بالغ
-          createdAt: new Date()
-        });
-
-        alert('تم إنشاء حسابك بنجاح! جاري التوجه إلى صفحة البحث عن المعلمين...');
-
-        setTimeout(() => {
-          window.location.href = './filter.html';
-        }, 2000);
-
-      } catch (error) {
-        alert('خطأ: ' + error.message);
-      }
-    });
-  </script>
-</body>
-</html>
+  });
+</script>
