@@ -179,417 +179,158 @@
           <button type="button" onclick="nextStep(3)">التالي</button>
         </div>
       </div>
-
-      <!-- الخطوة 3: رقم الهاتف وصلة القرابة -->
-      <div class="step" id="step3">
-        <div class="phone-group">
-          <select id="parentPhoneCode" required>
-            <option value="+966">🇸🇦 +966</option>
-            <option value="+971">🇦🇪 +971</option>
-            <option value="+965">🇰🇼 +965</option>
-            <option value="+973">🇧🇭 +973</option>
-            <option value="+968">🇴🇲 +968</option>
-            <option value="+20">🇪🇬 +20</option>
-          </select>
-          <input type="tel" id="parentPhoneNumber" placeholder="رقم الهاتف" required>
-        </div>
-        <select id="relationship" required>
-          <option value="" disabled selected>صلة القرابة</option>
-          <option value="أب">أب</option>
-          <option value="أم">أم</option>
-          <option value="أخ">أخ</option>
-          <option value="أخت">أخت</option>
-          <option value="ولي">ولي آخر</option>
-        </select>
-        <div class="form-nav">
-          <button type="button" onclick="prevStep(2)">السابق</button>
-          <button type="submit">إرسال طلب الموافقة</button>
-        </div>
-      </div>
-    </form>
-  </div>
-
-  <!-- Parent Approval Interface -->
-  <div class="approval-container" id="approvalContainer">
-    <h2>موافقة ولي الأمر على إنشاء حساب</h2>
-    
-    <div class="student-info" id="studentInfo">
-      <h3>معلومات الطالب:</h3>
-      <p><strong>الاسم:</strong> <span id="displayStudentName"></span></p>
-      <p><strong>العمر:</strong> <span id="displayStudentAge"></span> سنة</p>
-      <p><strong>البريد الإلكتروني:</strong> <span id="displayStudentEmail"></span></p>
-      <p><strong>ولي الأمر:</strong> <span id="displayParentName"></span></p>
-      <p><strong>صلة القرابة:</strong> <span id="displayRelationship"></span></p>
+<form id="parentSignupForm">
+  <!-- الخطوة 3: رقم الهاتف وصلة القرابة -->
+  <div class="step" id="step3">
+    <div class="phone-group">
+      <select id="parentPhoneCode" required>
+        <option value="+966">🇸🇦 +966</option>
+        <option value="+971">🇦🇪 +971</option>
+        <option value="+965">🇰🇼 +965</option>
+        <option value="+973">🇧🇭 +973</option>
+        <option value="+968">🇴🇲 +968</option>
+        <option value="+20">🇪🇬 +20</option>
+      </select>
+      <input type="tel" id="parentPhoneNumber" placeholder="رقم الهاتف" required>
     </div>
-
-    <div class="terms">
-      <h4>شروط الاستخدام وسياسة الخصوصية:</h4>
-      <p>بالموافقة على إنشاء الحساب، فإنك توافق على شروط الاستخدام وسياسة الخصوصية الخاصة بمنصة سراجك. نحن ملتزمون بحماية خصوصية طفلك وبياناته الشخصية وفقاً للقوانين المعمول بها.</p>
-      <ul style="text-align: right; margin: 10px 0;">
-        <li>سيتم استخدام البيانات فقط لأغراض تعليمية</li>
-        <li>لن يتم مشاركة البيانات مع أطراف ثالثة دون موافقتك</li>
-        <li>يمكنك طلب حذف الحساب في أي وقت</li>
-        <li>سيتم حماية جميع البيانات بأعلى معايير الأمان</li>
-      </ul>
-    </div>
-
-    <div class="buttons">
-      <button class="btn approve" onclick="approveAccount()">موافق - تفعيل الحساب</button>
-      <button class="btn reject" onclick="rejectAccount()">رفض - حذف الحساب</button>
+    <select id="relationship" required>
+      <option value="" disabled selected>صلة القرابة</option>
+      <option value="أب">أب</option>
+      <option value="أم">أم</option>
+      <option value="أخ">أخ</option>
+      <option value="أخت">أخت</option>
+      <option value="ولي">ولي آخر</option>
+    </select>
+    <div class="form-nav">
+      <button type="button" onclick="prevStep(2)">السابق</button>
+      <button type="submit">إرسال طلب الموافقة</button>
     </div>
   </div>
+</form>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<!-- واجهة موافقة ولي الأمر -->
+<div class="approval-container" id="approvalContainer" style="display:none;">
+  <h2>موافقة ولي الأمر على إنشاء حساب</h2>
+  <div class="student-info" id="studentInfo">
+    <h3>معلومات الطالب:</h3>
+    <p><strong>الاسم:</strong> <span id="displayStudentName"></span></p>
+    <p><strong>العمر:</strong> <span id="displayStudentAge"></span> سنة</p>
+    <p><strong>البريد الإلكتروني:</strong> <span id="displayStudentEmail"></span></p>
+    <p><strong>ولي الأمر:</strong> <span id="displayParentName"></span></p>
+    <p><strong>صلة القرابة:</strong> <span id="displayRelationship"></span></p>
+  </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAGjFbcG0KGlFPoYt0EP16nIKbK2ci_IQw",
-      authDomain: "siraj-74f58.firebaseapp.com",
-      projectId: "siraj-74f58",
-      storageBucket: "siraj-74f58.appspot.com",
-      messagingSenderId: "60485496189",
-      appId: "1:60485496189:web:10dcae7bd8865f91d47014",
-      measurementId: "G-1097R9KTSZ"
-    };
+  <div class="terms">
+    <h4>شروط الاستخدام وسياسة الخصوصية:</h4>
+    <p>بالموافقة على إنشاء الحساب، فإنك توافق على شروط الاستخدام وسياسة الخصوصية.</p>
+  </div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  <div class="buttons">
+    <button class="btn approve" onclick="approveAccount()">✅ موافق - تفعيل الحساب</button>
+    <button class="btn reject" onclick="rejectAccount()">❌ رفض - حذف الحساب</button>
+  </div>
+</div>
 
-    // Global variables
-    let currentStudentId = null;
-    let isUnder18 = true;
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // Navigation functions
-    window.nextStep = function(step) {
-      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-      document.getElementById(`step${step}`).classList.add('active');
+  const firebaseConfig = { /* بياناتك */ };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let currentStudentId = null;
+
+  // حفظ بيانات مؤقتة وإرسال طلب موافقة
+  document.getElementById("parentSignupForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const parentName = document.getElementById('parentName').value.trim();
+    const parentEmail = document.getElementById('parentEmail').value.trim();
+    const parentPassword = document.getElementById('parentPassword').value;
+    const studentName = document.getElementById('studentName').value.trim();
+    const studentAge = document.getElementById('studentAge').value;
+    const parentPhoneCode = document.getElementById('parentPhoneCode').value;
+    const parentPhoneNumber = document.getElementById('parentPhoneNumber').value.trim();
+    const relationship = document.getElementById('relationship').value;
+
+    if (!parentName || !parentEmail || !studentName) {
+      alert("يرجى إدخال جميع البيانات");
+      return;
     }
 
-    window.prevStep = function(step) {
-      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-      document.getElementById(`step${step}`).classList.add('active');
-    }
+    const approvalToken = Math.random().toString(36).substring(2, 15);
 
-    // Age check function
-    window.checkAge = function(under18) {
-      isUnder18 = under18;
-      if (under18) {
-        nextStep(1); // Continue with normal registration
-      } else {
-        showMessage('للطلاب البالغين 18 سنة أو أكثر، يمكنهم التسجيل مباشرة كطلاب دون الحاجة لموافقة ولي الأمر.', 'info');
-        setTimeout(() => {
-          window.location.href = './register-student.html';
-        }, 3000);
-      }
-    }
-
-    // Utility functions
-    function generateOTP(length = 6) {
-      let otp = '';
-      for (let i = 0; i < length; i++) otp += Math.floor(Math.random() * 10);
-      return otp;
-    }
-
-    function generateToken(length = 32) {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let token = '';
-      for (let i = 0; i < length; i++) {
-        token += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return token;
-    }
-
-    function showMessage(message, type = 'success') {
-      const messageDiv = document.createElement('div');
-      messageDiv.className = type === 'success' ? 'success-message' : 
-                           type === 'error' ? 'error-message' : 'info-message';
-      messageDiv.textContent = message;
-      
-      const container = document.querySelector('.form-container, .approval-container');
-      container.insertBefore(messageDiv, container.firstChild);
-      
-      setTimeout(() => messageDiv.remove(), 8000);
-    }
-
-    // Email sending function using EmailJS
-    async function sendApprovalEmail(parentEmail, parentName, studentName, studentAge, studentId, approvalToken) {
-      const baseUrl = window.location.origin + window.location.pathname;
-      const approvalUrl = `${baseUrl}?studentId=${studentId}&token=${approvalToken}&action=approve`;
-      const rejectUrl = `${baseUrl}?studentId=${studentId}&token=${approvalToken}&action=reject`;
-
-      // Simple email content for testing
-      const emailContent = `
-مرحباً ${parentName},
-
-تم طلب إنشاء حساب جديد على منصة سراجك لطفلك:
-
-📝 اسم الطالب: ${studentName}
-🎂 العمر: ${studentAge} سنة
-
-للموافقة على إنشاء الحساب:
-${approvalUrl}
-
-لرفض إنشاء الحساب:
-${rejectUrl}
-
-📋 شروط الاستخدام وسياسة الخصوصية:
-نحن ملتزمون بحماية خصوصية طفلك وبياناته الشخصية. سيتم استخدام البيانات فقط لأغراض تعليمية ولن يتم مشاركتها مع أطراف ثالثة دون موافقتك.
-
-مع تحيات فريق سراجك
-      `;
-
-      // For now, we'll show this in console and alert
-      console.log('Email to be sent to:', parentEmail);
-      console.log('Email content:', emailContent);
-      
-      try {
-        // Store the approval token in Firebase for verification
-        await setDoc(doc(db, 'approval_tokens', approvalToken), {
-          studentId,
-          parentEmail,
-          createdAt: new Date(),
-          used: false
-        });
-
-        // Simulate email sending (replace with actual email service)
-        alert(`تم إرسال طلب الموافقة إلى: ${parentEmail}\n\nروابط الموافقة:\n\nللموافقة: ${approvalUrl}\n\nللرفض: ${rejectUrl}`);
-        
-        return true;
-      } catch (error) {
-        console.error('Error storing approval token:', error);
-        return false;
-      }
-    }
-
-    // Form submission
-    document.getElementById('parentSignupForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const parentName = document.getElementById('parentName').value.trim();
-      const parentEmail = document.getElementById('parentEmail').value.trim();
-      const parentPassword = document.getElementById('parentPassword').value;
-      const studentName = document.getElementById('studentName').value.trim();
-      const studentAge = document.getElementById('studentAge').value;
-      const parentPhoneCode = document.getElementById('parentPhoneCode').value;
-      const parentPhoneNumber = document.getElementById('parentPhoneNumber').value.trim();
-      const relationship = document.getElementById('relationship').value;
-
-      if (!parentName || !parentEmail || !studentName || !studentAge) {
-        showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
-        return;
-      }
-
-      const otp = generateOTP();
-      const approvalToken = generateToken(32);
-
-      try {
-        // Create temporary student data (pending approval)
-        const tempStudentId = generateToken(20);
-        
-        // Save student data with pending approval status
-        await setDoc(doc(db, 'pending_students', tempStudentId), {
-          parentName,
-          parentEmail,
-          parentPassword, // In production, hash this
-          studentName,
-          studentAge: parseInt(studentAge),
-          phone: parentPhoneCode + parentPhoneNumber,
-          relationship,
-          otp,
-          approvalToken,
-          verified: false,
-          approved: false,
-          isUnder18,
-          createdAt: new Date(),
-          status: 'pending_approval'
-        });
-
-        // Send approval email
-        const emailSent = await sendApprovalEmail(parentEmail, parentName, studentName, studentAge, tempStudentId, approvalToken);
-        
-        if (emailSent) {
-          showMessage('تم إرسال طلب الموافقة بنجاح! يرجى التحقق من البريد الإلكتروني للموافقة على إنشاء الحساب.', 'success');
-          
-          // Reset form
-          document.getElementById('parentSignupForm').reset();
-          nextStep(0);
-        } else {
-          showMessage('خطأ في إرسال طلب الموافقة', 'error');
-        }
-
-      } catch (error) {
-        showMessage('خطأ: ' + error.message, 'error');
-      }
+    const tempStudentId = Math.random().toString(36).substring(2, 20);
+    await setDoc(doc(db, "pending_students", tempStudentId), {
+      parentName, parentEmail, parentPassword,
+      studentName, studentAge,
+      phone: parentPhoneCode + parentPhoneNumber,
+      relationship,
+      approvalToken,
+      approved: false,
+      createdAt: new Date()
     });
 
-    // Check if this is an approval page
-    async function checkApprovalMode() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const studentId = urlParams.get('studentId');
-      const token = urlParams.get('token');
-      const action = urlParams.get('action');
+    alert(`تم إرسال بريد لولي الأمر: ${parentEmail}\n\nرابط الموافقة:\n${window.location.href}?studentId=${tempStudentId}&token=${approvalToken}&action=approve`);
 
-      if (studentId && token) {
-        // Verify token
-        try {
-          const tokenDoc = await getDoc(doc(db, 'approval_tokens', token));
-          if (!tokenDoc.exists() || tokenDoc.data().used) {
-            showMessage('رابط الموافقة غير صالح أو منتهي الصلاحية', 'error');
-            return;
-          }
+    // هنا لازم تستخدم EmailJS أو Cloud Functions لإرسال البريد
+  });
 
-          currentStudentId = studentId;
-          await loadStudentInfo(studentId);
-          showApprovalInterface();
-          
-          // Auto-approve or reject if action is specified
-          if (action === 'approve') {
-            setTimeout(() => approveAccount(), 1000);
-          } else if (action === 'reject') {
-            setTimeout(() => rejectAccount(), 1000);
-          }
-        } catch (error) {
-          showMessage('خطأ في التحقق من صحة الرابط: ' + error.message, 'error');
-        }
+  // التحقق من رابط الموافقة
+  async function checkApproval() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const studentId = urlParams.get("studentId");
+    const token = urlParams.get("token");
+    const action = urlParams.get("action");
+
+    if (studentId && token) {
+      const studentDoc = await getDoc(doc(db, "pending_students", studentId));
+      if (studentDoc.exists() && studentDoc.data().approvalToken === token) {
+        currentStudentId = studentId;
+        document.getElementById("approvalContainer").style.display = "block";
+
+        if (action === "approve") approveAccount();
+        if (action === "reject") rejectAccount();
+      } else {
+        alert("رابط غير صالح");
       }
     }
+  }
 
-    // Show approval interface
-    function showApprovalInterface() {
-      document.getElementById('registrationForm').style.display = 'none';
-      document.getElementById('approvalContainer').style.display = 'block';
-    }
+  // موافقة الحساب
+  window.approveAccount = async function() {
+    const studentDoc = await getDoc(doc(db, "pending_students", currentStudentId));
+    if (!studentDoc.exists()) return;
 
-    // Load student information
-    async function loadStudentInfo(studentId) {
-      try {
-        const studentDoc = await getDoc(doc(db, 'pending_students', studentId));
-        if (studentDoc.exists()) {
-          const studentData = studentDoc.data();
-          document.getElementById('displayStudentName').textContent = studentData.studentName;
-          document.getElementById('displayStudentAge').textContent = studentData.studentAge;
-          document.getElementById('displayStudentEmail').textContent = studentData.parentEmail;
-          document.getElementById('displayParentName').textContent = studentData.parentName;
-          document.getElementById('displayRelationship').textContent = studentData.relationship;
-        } else {
-          showMessage('لم يتم العثور على بيانات الطالب', 'error');
-        }
-      } catch (error) {
-        showMessage('خطأ في تحميل البيانات: ' + error.message, 'error');
-      }
-    }
+    const data = studentDoc.data();
+    const userCredential = await createUserWithEmailAndPassword(auth, data.parentEmail, data.parentPassword);
+    const user = userCredential.user;
 
-    // Approve account
-    window.approveAccount = async function() {
-      if (!currentStudentId) return;
+    await setDoc(doc(db, "students", user.uid), {
+      ...data,
+      approved: true,
+      firebaseUid: user.uid,
+      activatedAt: new Date()
+    });
 
-      try {
-        // Get student data from pending collection
-        const pendingDoc = await getDoc(doc(db, 'pending_students', currentStudentId));
-        if (!pendingDoc.exists()) {
-          showMessage('بيانات الطالب غير موجودة', 'error');
-          return;
-        }
+    await sendEmailVerification(user);
+    await deleteDoc(doc(db, "pending_students", currentStudentId));
 
-        const studentData = pendingDoc.data();
+    alert("✅ تم تفعيل الحساب!");
+    window.location.href = "filter.html";
+  }
 
-        // Create actual Firebase user account
-        const userCredential = await createUserWithEmailAndPassword(auth, studentData.parentEmail, studentData.parentPassword);
-        const user = userCredential.user;
+  // رفض الحساب
+  window.rejectAccount = async function() {
+    if (!currentStudentId) return;
+    await deleteDoc(doc(db, "pending_students", currentStudentId));
+    alert("❌ تم رفض الحساب");
+    window.location.href = "index.html";
+  }
 
-        // Move data to students collection with approved status
-        await setDoc(doc(db, 'students', user.uid), {
-          ...studentData,
-          approved: true,
-          activatedAt: new Date(),
-          firebaseUid: user.uid
-        });
-
-        // Send email verification
-        await sendEmailVerification(user);
-
-        // Mark approval token as used
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
-        if (token) {
-          await updateDoc(doc(db, 'approval_tokens', token), { used: true });
-        }
-
-        // Delete from pending collection
-        await deleteDoc(doc(db, 'pending_students', currentStudentId));
-        
-        showMessage('تم تفعيل حساب الطالب بنجاح! جاري التوجه إلى صفحة البحث عن المعلمين...', 'success');
-        
-        setTimeout(() => {
-          window.location.href = './filter.html';
-        }, 2000);
-      } catch (error) {
-        showMessage('خطأ في تفعيل الحساب: ' + error.message, 'error');
-      }
-    }
-
-    // Reject account
-    window.rejectAccount = async function() {
-      if (!currentStudentId) return;
-
-      if (confirm('هل أنت متأكد من رفض إنشاء الحساب؟ سيتم حذف جميع البيانات نهائياً.')) {
-        try {
-          // Mark approval token as used
-          const urlParams = new URLSearchParams(window.location.search);
-          const token = urlParams.get('token');
-          if (token) {
-            await updateDoc(doc(db, 'approval_tokens', token), { used: true });
-          }
-
-          // Delete from pending collection
-          await deleteDoc(doc(db, 'pending_students', currentStudentId));
-          
-          showMessage('تم رفض الطلب وحذف الحساب بنجاح.', 'success');
-          
-          setTimeout(() => {
-            window.location.href = './index.html';
-          }, 3000);
-        } catch (error) {
-          showMessage('خطأ في حذف الحساب: ' + error.message, 'error');
-        }
-      }
-    }
-
-    // Initialize page
-    checkApprovalMode();
-  </script>
-
-  <!-- Add approval container to DOM -->
-  <div class="approval-container" id="approvalContainer">
-    <h2>موافقة ولي الأمر على إنشاء حساب</h2>
-    
-    <div class="student-info" id="studentInfo">
-      <h3>معلومات الطالب:</h3>
-      <p><strong>الاسم:</strong> <span id="displayStudentName"></span></p>
-      <p><strong>العمر:</strong> <span id="displayStudentAge"></span> سنة</p>
-      <p><strong>البريد الإلكتروني:</strong> <span id="displayStudentEmail"></span></p>
-      <p><strong>ولي الأمر:</strong> <span id="displayParentName"></span></p>
-      <p><strong>صلة القرابة:</strong> <span id="displayRelationship"></span></p>
-    </div>
-
-    <div class="terms">
-      <h4>شروط الاستخدام وسياسة الخصوصية:</h4>
-      <p>بالموافقة على إنشاء الحساب، فإنك توافق على شروط الاستخدام وسياسة الخصوصية الخاصة بمنصة سراجك. نحن ملتزمون بحماية خصوصية طفلك وبياناته الشخصية وفقاً للقوانين المعمول بها.</p>
-      <ul style="text-align: right; margin: 10px 0;">
-        <li>سيتم استخدام البيانات فقط لأغراض تعليمية</li>
-        <li>لن يتم مشاركة البيانات مع أطراف ثالثة دون موافقتك</li>
-        <li>يمكنك طلب حذف الحساب في أي وقت</li>
-        <li>سيتم حماية جميع البيانات بأعلى معايير الأمان</li>
-      </ul>
-    </div>
-
-    <div class="buttons">
-      <button class="btn approve" onclick="approveAccount()">موافق - تفعيل الحساب</button>
-      <button class="btn reject" onclick="rejectAccount()">رفض - حذف الحساب</button>
-    </div>
-  </div>
-</body>
-</html>
+  checkApproval();
+</script>
+      
