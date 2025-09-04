@@ -57,18 +57,17 @@
     <h2>تسجيل طالب (18+ سنة)</h2>
 
     <form id="studentSignupForm">
-      <!-- الخطوة 1: معلومات الطالب -->
-      <div class="step active" id="step1">
-        <input type="text" id="studentName" placeholder="اسم الطالب" required>
-        <input type="email" id="studentEmail" placeholder="البريد الإلكتروني" required>
-        <input type="password" id="studentPassword" placeholder="كلمة المرور" required>
-        <div class="form-nav">
-          <button type="button" onclick="nextStep(2)">التالي</button>
-        </div>
-      </div>
+      <form id="studentSignupForm">
+  <!-- الخطوة 1: معلومات الطالب -->
+  <div class="step active" id="step1">
+    <input type="text" id="studentName" placeholder="اسم الطالب" required>
+    <input type="email" id="studentEmail" placeholder="البريد الإلكتروني" required>
+    <input type="password" id="studentPassword" placeholder="كلمة المرور" required>
+    <div class="form-nav">
+      <button type="button" onclick="nextStep(2)">التالي</button>
+    </div>
+  </div>
 
-      <!-- الخطوة 2: معلومات إضافية -->
-   <form id="studentSignupForm">
   <!-- الخطوة 2: معلومات إضافية -->
   <div class="step" id="step2">
     <input type="text" id="school" placeholder="اسم المدرسة/الجامعة" required />
@@ -134,13 +133,28 @@
         createdAt: new Date()
       });
 
-      alert('تم إنشاء حسابك بنجاح!');
-
-      // انقله مباشرة لصفحة الفلترة
+      alert('🎉 تم إنشاء حسابك بنجاح!');
       window.location.href = "filter.html";
 
     } catch (error) {
-      alert('خطأ: ' + error.message);
+      if (error.code === 'auth/email-already-in-use') {
+        alert('⚠️ البريد الإلكتروني مسجل مسبقاً! يرجى تسجيل الدخول.');
+      } else {
+        alert('خطأ: ' + error.message);
+      }
     }
   });
+
+  // التنقل بين الخطوات
+  window.nextStep = function(step) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(`step${step}`).classList.add('active');
+  }
+
+  window.prevStep = function(step) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(`step${step}`).classList.add('active');
+  }
 </script>
+</body>
+</html>
