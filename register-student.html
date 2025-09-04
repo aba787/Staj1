@@ -58,7 +58,10 @@
 
     <form id="studentSignupForm">
       <form id="studentSignupForm">
+        
   <!-- الخطوة 1: معلومات الطالب -->
+<form id="studentSignupForm">
+  <!-- الخطوة 1: بيانات الطالب -->
   <div class="step active" id="step1">
     <input type="text" id="studentName" placeholder="اسم الطالب" required>
     <input type="email" id="studentEmail" placeholder="البريد الإلكتروني" required>
@@ -68,9 +71,9 @@
     </div>
   </div>
 
-  <!-- الخطوة 2: معلومات إضافية -->
+  <!-- الخطوة 2: بيانات إضافية -->
   <div class="step" id="step2">
-    <input type="text" id="school" placeholder="اسم المدرسة/الجامعة" required />
+    <input type="text" id="school" placeholder="اسم المدرسة/الجامعة" required>
     <div class="phone-group">
       <select id="phoneCode" required>
         <option value="+966">🇸🇦 +966</option>
@@ -80,7 +83,7 @@
         <option value="+968">🇴🇲 +968</option>
         <option value="+20">🇪🇬 +20</option>
       </select>
-      <input type="tel" id="phoneNumber" placeholder="رقم الهاتف" required />
+      <input type="tel" id="phoneNumber" placeholder="رقم الهاتف" required>
     </div>
     <div class="form-nav">
       <button type="button" onclick="prevStep(1)">السابق</button>
@@ -108,6 +111,7 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  // معالجة التسجيل
   document.getElementById('studentSignupForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
